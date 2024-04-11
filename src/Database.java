@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
     private Connection conn = null;
@@ -55,17 +52,36 @@ public class Database {
         closeConnection();
     }
 
+    private Integer checkIfUserExist(String userFName, String userLName) throws SQLException{
+        Integer user_id = -1;
+        Statement stmt = conn.createStatement();
+        String userSelect = "SELECT id FROM users WHERE first_name = \'" + userFName + "\' and last_name = \'" + userLName + "\';";
+        ResultSet checkExistID = stmt.executeQuery(userSelect);
+        boolean exist = false;
+        while(checkExistID.next()){
+            exist = true;
+            user_id = checkExistID.getInt(1);
+        }
+        return user_id;
+    }
+
     public void addNewOffer(String userFName, String userLName, String city, String type, float price, String description){
         connect();
-//        try {
-            Statement stmt = null;
-            String userSelect = "SELECT id FROM users WHERE first_name = \'" + userFName + "\' and \' last_name = \'" + userLName + "\');";
-//            stmt = conn.createStatement();
-//            String output = stmt.exe
-//        }
-//        catch (SQLException e){
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            Integer user_id = checkIfUserExist(userFName, userLName);
+            Statement stmt = conn.createStatement();
+            if (user_id == -1){
+                System.out.println("User doesn't exist");
+                return;
+            }
+            String insert = "INSERT INTO offers(id_user, type, city, price, description) VALUES (" + user_id.toString() + ",\'" +
+                    type + "\', \'" + city + "\', " + price + ", \'" + description + "\');";
+            stmt.executeUpdate(insert);
+            System.out.println("Urzytkownik dodany");
+        }
+        catch (SQLException e){
+            System.out.println("ERROR:" + e.getMessage());
+        }
         closeConnection();
     }
 }
