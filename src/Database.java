@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class Database {
     private Connection conn = null;
@@ -65,6 +67,74 @@ public class Database {
         return user_id;
     }
 
+    /**
+     *
+     * @param - id użytkownika
+     * @return zwraca dane użytkownika
+     */
+    public ArrayList<String> getUserData(int id)
+    {
+        connect();
+        ArrayList<String> data = new ArrayList<>();
+        PreparedStatement Ps = null;
+        ResultSet myRs = null;
+        try {
+
+            Ps = conn.prepareStatement("SELECT  first_name, last_name,email, phone_number from Users where Users.id = ?",
+                    ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            Ps.setInt(1, id);
+            myRs = Ps.executeQuery();
+            while (myRs.next()) {
+                data.add(myRs.getObject(0).toString());
+                data.add(myRs.getObject(1).toString());
+                data.add(myRs.getObject(2).toString());
+                data.add(myRs.getObject(3).toString());
+            }
+
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        closeConnection();
+        return data;
+    }
+
+    /**
+     *
+     *
+     * @param id - id użytkownika
+     * @return dane o wszystkich ofertach danego użytkownika
+     */
+    public Vector<Vector<String>> getUserOffers(int id)
+    {
+        connect();
+        Vector<Vector<String>> data = new Vector<>();
+        PreparedStatement Ps = null;
+        ResultSet myRs = null;
+
+        try {
+            Ps = conn.prepareStatement("SELECT type,city,price,description from Offers join Users on Users.id=Offers.id where Users.id = ?",
+                    ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            Ps.setInt(1, id);
+            myRs = Ps.executeQuery();
+            while (myRs.next()) {
+
+                Vector<String> tmp = new Vector<>();
+                tmp.add( (String)myRs.getObject(0));
+                tmp.add((String)(myRs.getObject(1)));
+                tmp.add((String)(myRs.getObject(2)));
+                tmp.add((String)(myRs.getObject(3)));
+                data.add(tmp);
+            }
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        closeConnection();
+        return data;
+    }
     public void addNewOffer(String userFName, String userLName, String city, String type, float price, String description){
         connect();
         try {
