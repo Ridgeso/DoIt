@@ -1,30 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.border.TitledBorder;
-
+import java.nio.file.Path;
 public class UserPanel  extends JPanel {
 
-    public UserPanel(int Id) {
-
-        id = Id;
+    public UserPanel()
+    {
         init();
     }
     public void init()
     {
         int i;
-        final var iconPath = Path.of(assetsDir.toString(), "user.jpg");
+        final var iconPath = Path.of(Application.assetsDir.toString(), "user.jpg");
         ImageIcon image = new ImageIcon(iconPath.toString());
         JLabel label = new JLabel(image);
         GridBagConstraints c = new GridBagConstraints();
         Vector<String> header = new Vector<>();
-
         label.setBorder(BorderFactory.createBevelBorder(1));
         setLayout(new GridBagLayout());
 
-        data = db.getUserData(id);
+        data = db.getUserData(Application.getInstance().getUser());
         String[] titles = {"imie:","nazwisko:","email:","numer telefonu:"};
 
         ArrayList<JLabel> dataLabels = new ArrayList<>();
@@ -33,8 +30,7 @@ public class UserPanel  extends JPanel {
             dataLabels.add(new JLabel(titles[i]+data.get(i)));
 
         }
-        offers = db.getUserOffers(id);
-
+        offers = db.getUserOffers(Application.getInstance().getUser());
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
         c.gridy = 0;
@@ -70,13 +66,11 @@ public class UserPanel  extends JPanel {
                 "Panel użytkownika",
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
-        setVisible(true);
+        setBounds(0, 0, 1000, 630);
     }
 
     private ArrayList<String> data;
     private Vector<Vector<String>> offers;
-    private int id;
-    public static final Path assetsDir = Path.of("assets");
     static Database db = new Database();
 
 }

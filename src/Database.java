@@ -13,11 +13,11 @@ public class Database {
             System.out.println(e.getMessage());
         }
         try {
-            // db parameters - specify the path to your database file
+           
             String url = "jdbc:postgresql://isilo.db.elephantsql.com/hznwjjkw";
-            String user = "hznwjjkw";
-            String pass = "Z4kfkk7BkYQeCZsecNF6N8gPKn-QDLSs";
-            // create a connection to the database
+            String user = "***";
+            String pass = "***";
+          
             conn = DriverManager.getConnection(url, user, pass);
 
             System.out.println("Connection to Postgres has been established.");
@@ -67,11 +67,7 @@ public class Database {
         return user_id;
     }
 
-    /**
-     *
-     * @param - id użytkownika
-     * @return zwraca dane użytkownika
-     */
+ 
     public ArrayList<String> getUserData(int id)
     {
         connect();
@@ -100,12 +96,6 @@ public class Database {
         return data;
     }
 
-    /**
-     *
-     *
-     * @param id - id użytkownika
-     * @return dane o wszystkich ofertach danego użytkownika
-     */
     public Vector<Vector<String>> getUserOffers(int id)
     {
         connect();
