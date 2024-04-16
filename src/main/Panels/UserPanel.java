@@ -1,3 +1,7 @@
+package main.Panels;
+
+import main.Database.Database;
+
 import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Path;
