@@ -1,5 +1,7 @@
 package main;
 
+import main.Panels.UserPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Path;
@@ -22,6 +24,7 @@ public class Application extends JFrame
     {
         instance = this;
         init();
+        setPanel(new UserPanel());
     }
 
     private void setPanel(JPanel panel)

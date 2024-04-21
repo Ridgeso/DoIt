@@ -17,8 +17,8 @@ public class Database {
         try {
 
             String url = "jdbc:postgresql://isilo.db.elephantsql.com/hznwjjkw";
-            String user = "***";
-            String pass = "***";
+            String user = "hznwjjkw";
+            String pass = "Z4kfkk7BkYQeCZsecNF6N8gPKn-QDLSs";
 
             conn = DriverManager.getConnection(url, user, pass);
 
