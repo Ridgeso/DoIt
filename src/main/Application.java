@@ -31,6 +31,16 @@ public class Application extends JFrame
         instance.repaint();
     }
 
+    public int getUser()
+    {
+        return user;
+    }
+
+    public void setUser(int newUser)
+    {
+        this.user = newUser;
+    }
+    
     private void init()
     {
         setTitle("DoIt");
@@ -48,4 +58,5 @@ public class Application extends JFrame
     }
 
     private static Application instance = null;
+    private int user;
 }

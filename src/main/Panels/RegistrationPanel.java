@@ -28,7 +28,7 @@ public class RegistrationPanel extends JPanel {
                 registerUser(newUser);
                     JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
                     frame.getContentPane().removeAll();
-                    frame.getContentPane().add(new UserPanel(1)); //do zmiany na mainPanel
+                    frame.getContentPane().add(new UserPanel()); //do zmiany na mainPanel
                     frame.revalidate();
                     frame.repaint();
                     JOptionPane.showMessageDialog(RegistrationPanel.this, "Błąd podczas rejestracji użytkownika", "Błąd", JOptionPane.ERROR_MESSAGE);
