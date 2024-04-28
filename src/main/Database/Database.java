@@ -3,32 +3,32 @@ package main.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Database {
     private Connection conn = null;
-    private void connect() {
-
-        try {
+    public void connect() {
+        Properties prop = new Properties();
+        try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env")) {
+            prop.load(input);
             Class.forName("org.postgresql.Driver");
-        }
-        catch (java.lang.ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
 
-            String url = "jdbc:postgresql://isilo.db.elephantsql.com/hznwjjkw";
-            String user = "hznwjjkw";
-            String pass = "Z4kfkk7BkYQeCZsecNF6N8gPKn-QDLSs";
+            String url = prop.getProperty("db.url");
+            String user = prop.getProperty("db.user");
+            String pass = prop.getProperty("db.pass");
 
             conn = DriverManager.getConnection(url, user, pass);
 
             System.out.println("Connection to Postgres has been established.");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            e.printStackTrace();
         }
     }
-
     private void closeConnection(){
         try {
             if (conn != null) {
