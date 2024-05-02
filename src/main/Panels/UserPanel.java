@@ -28,7 +28,7 @@ public class UserPanel  extends JPanel {
         label.setBorder(BorderFactory.createBevelBorder(1));
         setLayout(new GridBagLayout());
 
-        data = db.getUserData(Application.getInstance().getUser());
+        data = db.getUserData(Application.getInstance().getUserId());
         String[] titles = {"imie:","nazwisko:","email:","numer telefonu:"};
 
         ArrayList<JLabel> dataLabels = new ArrayList<>();
@@ -37,7 +37,7 @@ public class UserPanel  extends JPanel {
             dataLabels.add(new JLabel(titles[i]+data.get(i)));
 
         }
-        offers = db.getUserOffers(Application.getInstance().getUser());
+        offers = db.getUserOffers(Application.getInstance().getUserId());
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
         c.gridy = 0;

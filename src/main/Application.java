@@ -34,14 +34,14 @@ public class Application extends JFrame
         instance.repaint();
     }
 
-    public int getUser()
+    public int getUserId()
     {
-        return user;
+        return userId;
     }
 
-    public void setUser(int newUser)
+    public void setUserId(int newUserId)
     {
-        this.user = newUser;
+        this.userId = newUserId;
     }
     
     private void init()
@@ -61,5 +61,5 @@ public class Application extends JFrame
     }
 
     private static Application instance = null;
-    private int user;
+    private int userId;
 }
