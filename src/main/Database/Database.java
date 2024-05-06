@@ -146,4 +146,31 @@ public class Database {
         }
         closeConnection();
     }
+
+    public void addNewAplicant(String userFName, String userLName, String offerType, String offerCity){
+        connect();
+        try {
+            Integer user_id = checkIfUserExist(userFName, userLName);
+            Statement stmt = conn.createStatement();
+            if (user_id == -1){
+                System.out.println("User doesn't exist");
+                return;
+            }
+            String select = "SELECT id FROM offers WHERE type = \'" + offerType + "\' and city = \'" + offerCity + "\';";
+            ResultSet checkExistID = stmt.executeQuery(select);
+            checkExistID.next();
+            Integer offer_id = checkExistID.getInt(1);
+            if(offer_id == -1){
+                System.out.println("Offer doesn't exist");
+                return;
+            }
+            String insert = "INSERT INTO applicants(user_id, offer_id) VALUES (" + user_id.toString() + ", " +  offer_id.toString() + ");";
+            stmt.executeUpdate(insert);
+            System.out.println("Aplicant added");
+        }
+        catch (SQLException e){
+            System.out.println("ERROR:" + e.getMessage());
+        }
+        closeConnection();
+    }
 }
