@@ -69,19 +69,6 @@ public class Database {
         return user_id;
     }
 
-    public Integer checkUserLogin(String login, String password) throws SQLException{
-        Integer user_id = -1;
-        Statement stmt = conn.createStatement();
-        String userSelect = "SELECT id FROM users WHERE first_name = \'" + login + "\' and last_name = \'" + password + "\';";
-        ResultSet checkExistID = stmt.executeQuery(userSelect);
-        boolean exist = false;
-        while(checkExistID.next()){
-            exist = true;
-            user_id = checkExistID.getInt(1);
-        }
-        return user_id;
-    }
-
 
     public ArrayList<String> getUserData(int id)
     {
