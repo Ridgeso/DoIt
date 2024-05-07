@@ -16,5 +16,41 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/jar/apiguardian-api-1.1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-1.14.12-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-1.14.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-agent-1.14.12-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-agent-1.14.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-5.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-api-5.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-engine-5.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-params-5.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-platform-commons-1.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-platform-engine-1.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/mockito-core-5.11.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/objenesis-3.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/opentest4j-1.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/jar/apiguardian-api-1.1.2-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-1.14.12-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/byte-buddy-agent-1.14.12-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-api-5.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-api-5.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-engine-5.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-params-5.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-jupiter-params-5.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-platform-commons-1.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/junit-platform-engine-1.9.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/mockito-core-5.11.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/objenesis-3.3-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/jar/opentest4j-1.2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
