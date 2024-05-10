@@ -59,7 +59,11 @@ public class Application extends JFrame
         final var iconImage = new ImageIcon(iconPath.toString());
         setIconImage(iconImage.getImage());
     }
-
+    public int getUser() {
+        return userId;
+    }
     private static Application instance = null;
     private int userId;
+
+
 }

@@ -88,6 +88,20 @@ public class RegistrationPanel extends JPanel {
     {
         _database.addNewUser(newUser.firstName(), newUser.lastName(), newUser.email(), newUser.login(), newUser.password(), newUser.phoneNumber());
     }
+    public static void main(String[] args)
+    {
+        var frame = new JFrame();
+        frame.setTitle("DoIt");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setSize(1000, 630);
+        frame.setVisible(true);
+        frame.setBackground(new Color(255, 240, 206, 255));
+
+        frame.add(new RegistrationPanel());
+        frame.revalidate();
+        frame.repaint();
+    }
 }
 
 
