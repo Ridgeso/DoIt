@@ -2,14 +2,17 @@ package main.Panels;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import main.Database.Models.Offer;
+
 import java.awt.*;
 
 public class OfferPanel extends JPanel {
     private JLabel phoneNumberLabel, titleLabel, locationLabel, rateLabel, typeLabel, descriptionLabel;
-    private JTextField phoneNumberField, titleField, locationField, rateField, typeField;
+    private JTextField phoneNumberField/* , titleField, locationField,*/, rateField, typeField;
     private JTextArea descriptionArea;
 
-    public OfferPanel(String phoneNumber, String title, String location, double rate, String type, String description) {
+    public OfferPanel(String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
 
 
         phoneNumberLabel = new JLabel("Numer telefonu:");
@@ -20,8 +23,8 @@ public class OfferPanel extends JPanel {
         descriptionLabel = new JLabel("Opis oferty:");
 
         phoneNumberField = new JTextField(phoneNumber);
-        titleField = new JTextField(title);
-        locationField = new JTextField(location);
+        // titleField = new JTextField(title);
+        // locationField = new JTextField(location);
         rateField = new JTextField(String.valueOf(rate));
         typeField = new JTextField(type);
         descriptionArea = new JTextArea(description);
@@ -33,14 +36,14 @@ public class OfferPanel extends JPanel {
                 phoneNumberField.getBorder(),
                 BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
         ));
-        titleField.setBorder(BorderFactory.createCompoundBorder(
-                titleField.getBorder(),
-                BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
-        ));
-        locationField.setBorder(BorderFactory.createCompoundBorder(
-                locationField.getBorder(),
-                BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
-        ));
+        // titleField.setBorder(BorderFactory.createCompoundBorder(
+        //         titleField.getBorder(),
+        //         BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
+        // ));
+        // locationField.setBorder(BorderFactory.createCompoundBorder(
+        //         locationField.getBorder(),
+        //         BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
+        // ));
         rateField.setBorder(BorderFactory.createCompoundBorder(
                 rateField.getBorder(),
                 BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
@@ -59,9 +62,9 @@ public class OfferPanel extends JPanel {
         add(phoneNumberLabel);
         add(phoneNumberField);
         add(titleLabel);
-        add(titleField);
+        // add(titleField);
         add(locationLabel);
-        add(locationField);
+        // add(locationField);
         add(rateLabel);
         add(rateField);
         add(typeLabel);
@@ -71,6 +74,11 @@ public class OfferPanel extends JPanel {
 
         setBounds(0,0,1000,630);
         setVisible(true);
+    }
+
+    public OfferPanel(Offer offer) {
+        this(offer.phoneNumber(), offer.rate(),
+             offer.type(), offer.description());
     }
 
     public static void main(String[] args) {
@@ -90,7 +98,7 @@ public class OfferPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        frame.add(new OfferPanel(phoneNumber, title, location, rate, type, description));
+        frame.add(new OfferPanel(phoneNumber, rate, type, description));
         frame.revalidate();
         frame.repaint();
 

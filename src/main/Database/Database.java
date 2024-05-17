@@ -1,6 +1,7 @@
 package main.Database;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.Properties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import main.Database.Models.Offer;
 
 public class Database {
     private Connection conn = null;
@@ -73,6 +75,7 @@ public class Database {
     }
 
     public Integer checkUserLogin(String login, String password) throws SQLException{
+        connect();
         Integer user_id = -1;
         Statement stmt = conn.createStatement();
         String userSelect = "SELECT id FROM users WHERE first_name = \'" + login + "\' and last_name = \'" + password + "\';";
@@ -82,6 +85,7 @@ public class Database {
             exist = true;
             user_id = checkExistID.getInt(1);
         }
+        closeConnection();
         return user_id;
     }
 
@@ -190,4 +194,61 @@ public class Database {
 
         closeConnection();
     }
+
+    public Offer getOfferById(String id) {
+        connect();
+        Offer offer = null;
+        String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_uzytkownika WHERE Offers.id = ?";
+        try (PreparedStatement Ps = conn.prepareStatement(updateString)) {
+            Ps.setInt(1, Integer.parseInt(id));
+            try (ResultSet myRs = Ps.executeQuery()) {
+                if (myRs.next()) {
+                    String type = myRs.getString("type");
+                    String city = myRs.getString("city");
+                    String price = myRs.getString("price");
+                    String description = myRs.getString("description");
+                    String phoneNumber = myRs.getString("phone_number");
+                    double rate = myRs.getDouble("rate");
+                    offer = new Offer(Integer.parseInt(id), phoneNumber, rate, type, description, city, price);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        closeConnection();
+        return offer;
+    }
+    
+    
+    public List<Offer> getAllOffers() {
+        connect();
+        List<Offer> offers = new ArrayList<>();
+        String queryString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user";
+        try (PreparedStatement ps = conn.prepareStatement(queryString);
+             ResultSet resultSet = ps.executeQuery()) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String type = resultSet.getString("type");
+                String city = resultSet.getString("city");
+                String price = resultSet.getString("price");
+                String description = resultSet.getString("description");
+                String phoneNumber = resultSet.getString("phone_number");
+                double rate = resultSet.getDouble("price");
+                Offer offer = new Offer(id, phoneNumber, rate, type, description, city, price);
+                offers.add(offer);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    
+        closeConnection();
+        return offers;
+    }
+    
+
 }

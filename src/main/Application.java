@@ -1,54 +1,50 @@
 package main;
 
-import main.Panels.UserPanel;
+import main.Panels.LoginPanel;
+import main.Panels.MainPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Path;
 
-public class Application extends JFrame
-{
+public class Application extends JFrame {
 
-    public static void appMain()
-    {
-        if (instance == null)
-        {
+    public static void appMain() {
+        if (instance == null) {
             new Application();
         }
     }
 
-    public static final Application getInstance() { return instance; }
+    public static final Application getInstance() {
+        return instance;
+    }
+
     public static final Path assetsDir = Path.of("assets");
 
-    private Application()
-    {
+    private Application() {
         instance = this;
         init();
-        setPanel(new UserPanel());
+        setPanel(new LoginPanel());
     }
 
-    private void setPanel(JPanel panel)
-    {
+    public void setPanel(JPanel panel) {
+        getContentPane().removeAll(); 
         getContentPane().add(panel);
-        instance.revalidate();
-        instance.repaint();
+        revalidate();
+        repaint();
     }
 
-    public int getUserId()
-    {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int newUserId)
-    {
+    public void setUserId(int newUserId) {
         this.userId = newUserId;
     }
-    
-    private void init()
-    {
+
+    private void init() {
         setTitle("DoIt");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
         setResizable(false);
         setSize(1000, 630);
         setVisible(true);
@@ -59,11 +55,11 @@ public class Application extends JFrame
         final var iconImage = new ImageIcon(iconPath.toString());
         setIconImage(iconImage.getImage());
     }
+
     public int getUser() {
         return userId;
     }
+
     private static Application instance = null;
     private int userId;
-
-
 }

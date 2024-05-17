@@ -1,7 +1,10 @@
 package main.Panels;
+
 import main.Application;
 import main.Database.Database;
+
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +12,8 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.border.TitledBorder;
 
-public class UserPanel  extends JPanel {
+public class UserPanel extends JPanel {
 
     static Database db;
     private ArrayList<String> data;
@@ -24,6 +26,7 @@ public class UserPanel  extends JPanel {
     private GridBagConstraints constraints;
     private JButton buttonAdd;
     private JButton buttonAddOffer;
+    private JButton showMainPanelButton;
 
     public UserPanel() {
         db = new Database();
@@ -94,6 +97,11 @@ public class UserPanel  extends JPanel {
         ++constraints.gridy;
         buttonAdd.addActionListener(e -> showOfferForm());
         add(buttonAdd, constraints);
+
+        showMainPanelButton = new JButton("Pokaż panel główny");
+        showMainPanelButton.addActionListener(e -> showMainPanel());
+        ++constraints.gridy;
+        add(showMainPanelButton, constraints);
 
         setBackground(new Color(255, 240, 206, 255));
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
@@ -181,21 +189,7 @@ public class UserPanel  extends JPanel {
         add(buttonAddOffer, constraints);
     }
 
-    public static void main(String[] args) {
-        Application.appMain();
-        UserPanel userPanel = new UserPanel();
-        JFrame frame = new JFrame("Panel użytkownika");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        JPanel main = new JPanel(new GridLayout(0, 1));
-        JScrollPane scroll = new JScrollPane(main,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setPreferredSize(new Dimension(1000, 630));
-        main.add(userPanel);
-        frame.add(scroll);
-        frame.pack();
-        frame.setLocationByPlatform(true);
-        frame.setVisible(true);
-
+    private void showMainPanel() {
+        Application.getInstance().setPanel(new MainPanel());
     }
 }
