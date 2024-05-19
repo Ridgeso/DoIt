@@ -147,7 +147,7 @@ public class Database {
     public Vector<Vector<String>> getUserApplications(int id){
         connect();
         Vector<Vector<String>> data = new Vector<>();
-        String updateString = "SELECT type,city,price from (Applications join Users on Users.id=Application.id_user) join Offers on Application.id_offer = Offers.id where Users.id = ?";
+        String updateString = "SELECT type,city,price from (applicants join Users on Users.id=applicants.id_user) join Offers on applicants.id_offer = Offers.id where Users.id = ?";
         ResultSet myRs = null;
 
         try(PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE) ){
