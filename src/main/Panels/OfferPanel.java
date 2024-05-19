@@ -7,14 +7,17 @@ import javax.swing.border.EmptyBorder;
 import main.Database.Models.Offer;
 import java.awt.*;
 
+import static main.Application.getInstance;
+
 public class OfferPanel extends JPanel {
     private JLabel phoneNumberLabel, titleLabel, locationLabel, rateLabel, typeLabel, descriptionLabel, applicationCounter;
     private JTextField phoneNumberField/* , titleField, locationField,*/, rateField, typeField;
     private JTextArea descriptionArea;
     private JButton backButton, applyButton;
-    private Database _database;
-    public OfferPanel(String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
-        applicationCounter = new JLabel("Liczba aplikacji: 12"); //TODO dodać do tego countApplications(_database.offer_id)
+    private Database db= new Database();
+    public OfferPanel(int id,String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
+        //getInstance().setUserId(1);
+        applicationCounter = new JLabel("Liczba aplikacji: "+ db.countApplications(id)); //TODO dodać do tego countApplications(_database.offer_id)
         phoneNumberLabel = new JLabel("Numer telefonu:");
         titleLabel = new JLabel("Tytuł oferty:");
         locationLabel = new JLabel("Lokalizacja:");
@@ -23,7 +26,6 @@ public class OfferPanel extends JPanel {
         descriptionLabel = new JLabel("Opis oferty:");
         backButton = new JButton("Powrót");
         applyButton = new JButton("Aplikuj");
-        _database = new Database();
         phoneNumberField = new JTextField(phoneNumber);
         // titleField = new JTextField(title);
         // locationField = new JTextField(location);
@@ -84,7 +86,7 @@ public class OfferPanel extends JPanel {
         });
 
         applyButton.addActionListener(e -> {
-            //TODO _database.AssignUserToOffer(_database.getOfferId,_database.getUserid);
+             db.assignUserToOffer(id,getInstance().getUserId());
         });
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(backButton, BorderLayout.WEST);
@@ -100,7 +102,7 @@ public class OfferPanel extends JPanel {
     }
 
     public OfferPanel(Offer offer) {
-        this(offer.phoneNumber(), offer.rate(),
+        this(offer.id(),offer.phoneNumber(), offer.rate(),
                 offer.type(), offer.description());
     }
 
@@ -121,7 +123,7 @@ public class OfferPanel extends JPanel {
         double rate = 50.0;
         String type = "Pełny etat";
         String description = "Szukamy programisty Java z doświadczeniem.";
-
+        int id = 1;
         frame.setTitle("DoIt");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
@@ -130,7 +132,7 @@ public class OfferPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        frame.add(new OfferPanel(phoneNumber, rate, type, description));
+        frame.add(new OfferPanel(id,phoneNumber, rate, type, description));
         frame.revalidate();
         frame.repaint();
     }

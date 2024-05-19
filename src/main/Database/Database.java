@@ -249,20 +249,25 @@ public class Database {
         closeConnection();
         return offers;
     }
-    public void assignUserToOffer(Integer offer_id, Integer user_id)throws SQLException {
-        connect();
-        Statement stmt = conn.createStatement();
-        if (user_id == -1){
-            System.out.println("User doesn't exist");
-            return;
-        }
-        String queryString = "insert into Aplikujacy(id_uzytkownika, id_oferty) values (user_id,offer_id)";
-        stmt.executeUpdate(queryString);
-        System.out.println("Pomyślnie zaaplikowano");
+    public void assignUserToOffer(int offerId, int userId) {
+        try{
+            connect();
+            Statement stmt = conn.createStatement();
+            if (userId== -1){
+                System.out.println("User doesn't exist");
+                return;
+            }
+            String queryString = "insert into applicants(user_id, offer_id) values (" + userId + ",\'" + offerId+"\');";
+
+
+            stmt.executeUpdate(queryString);
+            System.out.println("Pomyślnie zaaplikowano");
+        }catch (Exception e){}
+        closeConnection();
     }
-    public int countApplications(int offer_id) throws SQLException{
+    public int countApplications(int offer_id){
         connect();
-        String queryString = "SELECT COUNT(*) FROM Applications WHERE offer_id=" + offer_id;
+        String queryString = "SELECT COUNT(*) FROM applicants WHERE offer_id=" + offer_id;
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {
             try (ResultSet myRs = ps.executeQuery()) {
                 if (myRs.next()) {
@@ -271,9 +276,9 @@ public class Database {
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
-        }catch (Exception e){
-            System.out.println(e.getMessage());
         }
+        closeConnection();
         return 0;
+
     }
 }
