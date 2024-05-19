@@ -18,6 +18,7 @@ public class LoginPanel extends JPanel {
     public LoginPanel() {
         initializeComponents();
         addComponentsToPanel();
+        setBackground(new Color(255, 240, 206, 255));
         loginButton.addActionListener(e -> {
             if(!usernameField.getText().isEmpty() && passwordField.getPassword().length > 0) {
                 try {

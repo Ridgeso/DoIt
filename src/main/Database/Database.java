@@ -93,26 +93,21 @@ public class Database {
     {
         connect();
         ArrayList<String> data = new ArrayList<>();
-        String updateString = "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id = ?";
-        ResultSet myRs = null;
-        try (PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)){
-
-            if(Ps != null) {
-
-                Ps.setInt(1, id);
-                myRs = Ps.executeQuery();
-                while (myRs.next()) {
-                    data.add(myRs.getObject(0).toString());
-                    data.add(myRs.getObject(1).toString());
-                    data.add(myRs.getObject(2).toString());
-                    data.add(myRs.getObject(3).toString());
-                }
+        String updateString = "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id = " + id;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet checkExistID = stmt.executeQuery(updateString);
+            while(checkExistID.next()){
+                data.add(checkExistID.getString(1));
+                data.add(checkExistID.getString(2));
+                data.add(checkExistID.getString(3));
+                data.add(checkExistID.getString(4));
+                System.out.println("Pobrano dane uzytkownika: " + checkExistID.getString(1) + " " +checkExistID.getString(2) + " " + checkExistID.getString(3) + " " + checkExistID.getString(4));
             }
-            System.out.println("Pobrano dane uzytkownika");
 
-    }
+        }
         catch (SQLException e){
-            System.out.println(e.getMessage());
+            System.out.println("getUserData: " + e.getMessage());
         }
 
         closeConnection();
@@ -134,16 +129,16 @@ public class Database {
                 while (myRs.next()) {
 
                     Vector<String> tmp = new Vector<>();
-                    tmp.add((String) myRs.getObject(0));
-                    tmp.add((String) (myRs.getObject(1)));
-                    tmp.add((String) (myRs.getObject(2)));
-                    tmp.add((String) (myRs.getObject(3)));
+                    tmp.add(myRs.getObject(1).toString());
+                    tmp.add((myRs.getObject(2).toString()));
+                    tmp.add((myRs.getObject(3).toString()));
+                    tmp.add((myRs.getObject(4).toString()));
                     data.add(tmp);
                 }
             }
         }
         catch (SQLException e){
-            System.out.println(e.getMessage());
+            System.out.println("getUserOffers: " + e.getMessage());
         }
 
         closeConnection();
@@ -171,7 +166,7 @@ public class Database {
             }
         }
         catch (SQLException e){
-            System.out.println(e.getMessage());
+            System.out.println("getUserApplications: " + e.getMessage());
         }
         closeConnection();
         return data;

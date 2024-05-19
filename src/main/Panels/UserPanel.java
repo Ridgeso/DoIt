@@ -51,7 +51,7 @@ public class UserPanel extends JPanel {
         ArrayList<JLabel> dataLabels = new ArrayList<>();
 
         for (int i = 0; i < titles.length; i++) {
-            dataLabels.add(new JLabel(titles[i]));//+data.get(i)
+            dataLabels.add(new JLabel(titles[i] + data.get(i)));//+data.get(i)
         }
 
         constraints.fill = GridBagConstraints.HORIZONTAL;

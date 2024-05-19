@@ -49,7 +49,7 @@ public class RegistrationPanel extends JPanel {
         agreeCheckBox = new JCheckBox("Zgoda na RODO");
         registerButton = new JButton("Zarejestruj");
         _database = new Database();
-
+        agreeCheckBox.setOpaque(false);
         loginField.setDocument(new JTextFieldLimit(42));
         emailField.setDocument(new JTextFieldLimit(42));
         firstNameField.setDocument(new JTextFieldLimit(42));
@@ -61,6 +61,7 @@ public class RegistrationPanel extends JPanel {
 
     private void addComponentsToPanel() {
         setLayout(new GridLayout(8, 2));
+        setOpaque( false );
         add(new JLabel("Login:"));
         add(loginField);
         add(new JLabel("Email:"));
