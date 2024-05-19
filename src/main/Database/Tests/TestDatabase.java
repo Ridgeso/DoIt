@@ -164,4 +164,28 @@ class TestDatabase
 //
 //    }
 
+//    @Test
+//    void assignUserToOffer()throws SQLException {
+//        var user_id = 1;
+//        var offer_id = 1;
+//
+//
+//        try (var mockStatement = mock(Statement.class))
+//        {
+//            when(mockConnection.createStatement()).thenReturn(mockStatement);
+//            when(mockStatement.executeUpdate(anyString())).thenReturn(0);
+//
+//            sut.AssignUserToOffer(offer_id,user_id);
+//
+//            verify(mockConnection, times(1)).createStatement();
+//            verify(mockStatement, times(1)).executeUpdate(anyString());
+//        }
+//    }
+
+
+//    @Test
+//    void countApplications() throws SQLException{
+//        int offer_id;
+//        //TODO
+//    }
 }

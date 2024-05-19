@@ -249,6 +249,31 @@ public class Database {
         closeConnection();
         return offers;
     }
-    
-
+    public void assignUserToOffer(Integer offer_id, Integer user_id)throws SQLException {
+        connect();
+        Statement stmt = conn.createStatement();
+        if (user_id == -1){
+            System.out.println("User doesn't exist");
+            return;
+        }
+        String queryString = "insert into Aplikujacy(id_uzytkownika, id_oferty) values (user_id,offer_id)";
+        stmt.executeUpdate(queryString);
+        System.out.println("Pomyślnie zaaplikowano");
+    }
+    public int countApplications(int offer_id) throws SQLException{
+        connect();
+        String queryString = "SELECT COUNT(*) FROM Applications WHERE offer_id=" + offer_id;
+        try (PreparedStatement ps = conn.prepareStatement(queryString)) {
+            try (ResultSet myRs = ps.executeQuery()) {
+                if (myRs.next()) {
+                    return myRs.getInt(1);
+                }
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return 0;
+    }
 }

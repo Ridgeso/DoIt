@@ -1,27 +1,29 @@
 package main.Panels;
 
 import javax.swing.*;
+import main.Database.Database;
+
 import javax.swing.border.EmptyBorder;
-
 import main.Database.Models.Offer;
-
 import java.awt.*;
 
 public class OfferPanel extends JPanel {
-    private JLabel phoneNumberLabel, titleLabel, locationLabel, rateLabel, typeLabel, descriptionLabel;
+    private JLabel phoneNumberLabel, titleLabel, locationLabel, rateLabel, typeLabel, descriptionLabel, applicationCounter;
     private JTextField phoneNumberField/* , titleField, locationField,*/, rateField, typeField;
     private JTextArea descriptionArea;
-
+    private JButton backButton, applyButton;
+    private Database _database;
     public OfferPanel(String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
-
-
+        applicationCounter = new JLabel("Liczba aplikacji: 12"); //TODO dodać do tego countApplications(_database.offer_id)
         phoneNumberLabel = new JLabel("Numer telefonu:");
         titleLabel = new JLabel("Tytuł oferty:");
         locationLabel = new JLabel("Lokalizacja:");
         rateLabel = new JLabel("Stawka oferty:");
         typeLabel = new JLabel("Typ oferty:");
         descriptionLabel = new JLabel("Opis oferty:");
-
+        backButton = new JButton("Powrót");
+        applyButton = new JButton("Aplikuj");
+        _database = new Database();
         phoneNumberField = new JTextField(phoneNumber);
         // titleField = new JTextField(title);
         // locationField = new JTextField(location);
@@ -57,28 +59,58 @@ public class OfferPanel extends JPanel {
                 BorderFactory.createEmptyBorder(textFieldMargin, textFieldMargin, textFieldMargin, textFieldMargin)
         ));
 
-        setLayout(new GridLayout(6, 2));
+        setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10)); // Marginesy dla panelu
-        add(phoneNumberLabel);
-        add(phoneNumberField);
-        add(titleLabel);
-        // add(titleField);
-        add(locationLabel);
-        // add(locationField);
-        add(rateLabel);
-        add(rateField);
-        add(typeLabel);
-        add(typeField);
-        add(descriptionLabel);
-        add(new JScrollPane(descriptionArea));
 
-        setBounds(0,0,1000,630);
+        JPanel fieldsPanel = new JPanel(new GridLayout(6, 2));
+        fieldsPanel.add(phoneNumberLabel);
+        fieldsPanel.add(phoneNumberField);
+        fieldsPanel.add(titleLabel);
+        // fieldsPanel.add(titleField);
+        fieldsPanel.add(locationLabel);
+        // fieldsPanel.add(locationField);
+        fieldsPanel.add(rateLabel);
+        fieldsPanel.add(rateField);
+        fieldsPanel.add(typeLabel);
+        fieldsPanel.add(typeField);
+        fieldsPanel.add(descriptionLabel);
+        fieldsPanel.add(new JScrollPane(descriptionArea));
+        fieldsPanel.add(applicationCounter);
+
+        add(fieldsPanel, BorderLayout.CENTER);
+
+        backButton.addActionListener(e -> {
+            changePanel(new MainPanel());
+        });
+
+        applyButton.addActionListener(e -> {
+            //TODO _database.AssignUserToOffer(_database.getOfferId,_database.getUserid);
+        });
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(backButton, BorderLayout.WEST);
+        add(topPanel, BorderLayout.NORTH);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBorder(new EmptyBorder(20, 10, 30, 10)); // Add some padding
+        bottomPanel.add(applyButton);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        setBounds(0, 0, 1000, 630);
         setVisible(true);
     }
 
     public OfferPanel(Offer offer) {
         this(offer.phoneNumber(), offer.rate(),
-             offer.type(), offer.description());
+                offer.type(), offer.description());
+    }
+
+
+
+    public void changePanel(JPanel panel) {
+        removeAll();
+        add(panel);
+        revalidate();
+        repaint();
     }
 
     public static void main(String[] args) {
@@ -101,6 +133,5 @@ public class OfferPanel extends JPanel {
         frame.add(new OfferPanel(phoneNumber, rate, type, description));
         frame.revalidate();
         frame.repaint();
-
     }
 }
