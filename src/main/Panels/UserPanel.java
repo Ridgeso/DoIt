@@ -88,7 +88,7 @@ public class UserPanel extends JPanel {
 
         for (int j = 0; j < applications.size(); j++) {
             ++constraints.gridy;
-            ContentPanel empty = new ContentPanel("Offer " + applications.get(j).get(0),
+            ContentPanel empty = new ContentPanel(j, "Offer " + applications.get(j).get(0),
                     "Location " + applications.get(j).get(1), applications.get(j).get(2));
             add(empty, constraints);
         }

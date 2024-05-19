@@ -1,18 +1,21 @@
 package main.Panels;
 
+import main.Database.Database;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ContentPanel extends JPanel {
+    private JPanel buttonPanel, infoPanel;
     private JLabel offerNameLabel;
     private JLabel localisationLabel;
     private JLabel priceLabel;
-    private JButton downloadButton;
     private JButton viewButton;
-
-    public ContentPanel(String offerName, String localisation, String price) {
+    private GridBagConstraints constraints = new GridBagConstraints();
+    private int id;
+    Database database = new Database();
+    public ContentPanel(int id, String offerName, String localisation, String price) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEtchedBorder());
 
@@ -20,48 +23,52 @@ public class ContentPanel extends JPanel {
         localisationLabel = new JLabel("Localisation: " + localisation);
         priceLabel = new JLabel("Price: " + price +"zł/h");
 
-        downloadButton = new JButton("Download");
-        downloadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: implementacja działania
-                System.out.println("Downloading offer: " + offerName);
-            }
-        });
 
         viewButton = new JButton("View Offer");
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO: implementacja działania
                 System.out.println("Viewing offer: " + offerName);
+//                Implementacja z łączeniem do bazy danych, będzie działać gdy zacznie działac wyciąganie oferty po ID z bazy danych
+//
+//                viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id))).getPanel());
+                  viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
             }
         });
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-        buttonPanel.setMaximumSize(new Dimension(1000, 1));
-        buttonPanel.add(downloadButton);
-        buttonPanel.add(viewButton);
+        constraints.gridheight = GridBagConstraints.REMAINDER;
+        buttonPanel = new JPanel(new GridLayout(1, 0));
+        buttonPanel.setPreferredSize(new Dimension(1, 20));
+        buttonPanel.add(viewButton, constraints);
 
-        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
-        infoPanel.add(offerNameLabel);
-        infoPanel.add(localisationLabel);
-        infoPanel.add(priceLabel);
+        infoPanel = new JPanel(new GridLayout(3, 1));
+        infoPanel.add(offerNameLabel, constraints);
+        infoPanel.add(localisationLabel, constraints);
+        infoPanel.add(priceLabel, constraints);
 
         add(infoPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
     }
 
+    public void viewOfferPanel(JPanel panel) {
+
+        buttonPanel.setPreferredSize(new Dimension(1, 20));
+        removeAll();
+        add(panel);
+        revalidate();
+        repaint();
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Jobs");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        JPanel main = new JPanel(new GridLayout(0, 1));
+        JPanel main = new JPanel(new GridLayout(10, 1));
         JScrollPane scroll = new JScrollPane(main,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setPreferredSize(new Dimension(1000, 630));
         for(int i=0; i<10; i++) {
-            ContentPanel empty = new ContentPanel("Offer " + i, "Location " + i, i+"00.0");
+            ContentPanel empty = new ContentPanel(i, "Offer " + i, "Location " + i, i+"00.0");
             main.add(empty);
         }
         frame.add(scroll);

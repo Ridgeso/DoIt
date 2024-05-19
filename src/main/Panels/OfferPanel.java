@@ -14,6 +14,7 @@ public class OfferPanel extends JPanel {
     private JTextField phoneNumberField/* , titleField, locationField,*/, rateField, typeField;
     private JTextArea descriptionArea;
     private JButton backButton, applyButton;
+    JPanel fieldsPanel;
     private Database db= new Database();
     public OfferPanel(int id,String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
         //getInstance().setUserId(1);
@@ -64,7 +65,7 @@ public class OfferPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10)); // Marginesy dla panelu
 
-        JPanel fieldsPanel = new JPanel(new GridLayout(6, 2));
+        fieldsPanel = new JPanel(new GridLayout(6, 2));
         fieldsPanel.add(phoneNumberLabel);
         fieldsPanel.add(phoneNumberField);
         fieldsPanel.add(titleLabel);
@@ -101,6 +102,10 @@ public class OfferPanel extends JPanel {
         setVisible(true);
     }
 
+    public JPanel getPanel()
+    {
+        return fieldsPanel;
+    }
     public OfferPanel(Offer offer) {
         this(offer.id(),offer.phoneNumber(), offer.rate(),
                 offer.type(), offer.description());
