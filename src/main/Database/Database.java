@@ -1,5 +1,6 @@
 package main.Database;
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -9,13 +10,16 @@ import java.util.Properties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import main.Application;
 import main.Database.Models.Offer;
 
+import javax.swing.text.Style;
+
 public class Database {
-    private Connection conn = null;
+    public Connection conn = null;
 
     public void connect() {
-
         Properties prop = new Properties();
         try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env")) {
             prop.load(input);
@@ -32,11 +36,12 @@ public class Database {
             e.printStackTrace();
         }
     }
-    private void closeConnection(){
+    public void closeConnection(){
         try {
             if (conn != null) {
                 conn.close();
                 conn = null;
+                System.out.println("Connection to Postgres has been closed.");
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -61,30 +66,28 @@ public class Database {
         closeConnection();
     }
 
-    private Integer checkIfUserExist(String userFName, String userLName) throws SQLException{
-        Integer user_id = -1;
+    public int checkIfUserExist(String userFName, String userLName) throws SQLException {
+        connect();
         Statement stmt = conn.createStatement();
-        String userSelect = "SELECT id FROM users WHERE first_name = \'" + userFName + "\' and last_name = \'" + userLName + "\';";
+        String userSelect = MessageFormat.format(
+            "SELECT id FROM users WHERE first_name = ''{0}'' and last_name = ''{1}'';",
+            userFName,
+            userLName);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
-        boolean exist = false;
-        while(checkExistID.next()){
-            exist = true;
-            user_id = checkExistID.getInt(1);
-        }
+        int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
+        closeConnection();
         return user_id;
     }
 
-    public Integer checkUserLogin(String login, String password) throws SQLException{
+    public int checkUserLogin(String login, String password) throws SQLException {
         connect();
-        Integer user_id = -1;
         Statement stmt = conn.createStatement();
-        String userSelect = "SELECT id FROM users WHERE first_name = \'" + login + "\' and last_name = \'" + password + "\';";
+        String userSelect = MessageFormat.format(
+            "SELECT id FROM users WHERE login = ''{0}'' and password = ''{1}'';",
+            login,
+            password);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
-        boolean exist = false;
-        while(checkExistID.next()){
-            exist = true;
-            user_id = checkExistID.getInt(1);
-        }
+        int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
         closeConnection();
         return user_id;
     }
@@ -266,6 +269,7 @@ public class Database {
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {
             try (ResultSet myRs = ps.executeQuery()) {
                 if (myRs.next()) {
+                    closeConnection();
                     return myRs.getInt(1);
                 }
             }

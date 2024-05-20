@@ -56,10 +56,7 @@ public class Application extends JFrame {
         setIconImage(iconImage.getImage());
     }
 
-    public int getUser() {
-        return userId;
-    }
-
     private static Application instance = null;
-    private int userId;
+    public static final int INVALID_USER_ID = -1;
+    private int userId = INVALID_USER_ID;
 }

@@ -41,9 +41,9 @@ public class UserPanel extends JPanel {
         constraints = new GridBagConstraints();
         header = new Vector<>();
 
-        data = db.getUserData(Application.getInstance().getUser());
-        applications = db.getUserApplications(Application.getInstance().getUser());
-        offers = db.getUserOffers(Application.getInstance().getUser());
+        data = db.getUserData(Application.getInstance().getUserId());
+        applications = db.getUserApplications(Application.getInstance().getUserId());
+        offers = db.getUserOffers(Application.getInstance().getUserId());
         label.setBorder(BorderFactory.createBevelBorder(1));
 
         setLayout(new GridBagLayout());
@@ -120,7 +120,7 @@ public class UserPanel extends JPanel {
         JLabel infoLabel = new JLabel("Dodano ofertę", SwingConstants.CENTER);
         infoLabel.setText("Dodano ofertę");
         try {
-            db.addNewOfferWhenUserExists(Application.getInstance().getUser(), city, type, price, description);
+            db.addNewOfferWhenUserExists(Application.getInstance().getUserId(), city, type, price, description);
         } catch (SQLException exception) {
             infoLabel.setText("Błąd");
         }

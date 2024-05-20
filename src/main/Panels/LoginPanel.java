@@ -20,29 +20,43 @@ public class LoginPanel extends JPanel {
         addComponentsToPanel();
         setBackground(new Color(255, 240, 206, 255));
         loginButton.addActionListener(e -> {
-            if(!usernameField.getText().isEmpty() && passwordField.getPassword().length > 0) {
-                try {
-                    int id = _database.checkUserLogin(usernameField.getText(), new String(passwordField.getPassword()));
-                    if(id >= 0) {
-                        Application.getInstance().setUserId(id);
-                        JOptionPane.showMessageDialog(LoginPanel.this, "Użytkownik poprawnie zalogowany", "Informacja", JOptionPane.INFORMATION_MESSAGE);
-                        changePanel(new UserPanel());
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(LoginPanel.this, "Nie istnieje taki użytkownik", "Błąd", JOptionPane.ERROR_MESSAGE);
-                    }
+            if(usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(
+                    LoginPanel.this,
+                    "Wpisz wszystkie dane",
+                    "Błąd",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                int id = _database.checkUserLogin(usernameField.getText(), new String(passwordField.getPassword()));
+                if(id == Application.INVALID_USER_ID) {
+                    JOptionPane.showMessageDialog(
+                        LoginPanel.this,
+                        "Nie istnieje taki użytkownik",
+                        "Błąd",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-                catch (SQLException exception){
-                    System.out.println(exception.getMessage());
-                    JOptionPane.showMessageDialog(LoginPanel.this, "Błąd podczas logowania", "Błąd", JOptionPane.ERROR_MESSAGE);
-                }
+                Application.getInstance().setUserId(id);
+                JOptionPane.showMessageDialog(
+                    LoginPanel.this,
+                    "Użytkownik poprawnie zalogowany",
+                    "Informacja",
+                    JOptionPane.INFORMATION_MESSAGE);
+                changePanel(new UserPanel());
+            }
+            catch (SQLException exception){
+                System.out.println(exception.getMessage());
+                JOptionPane.showMessageDialog(
+                    LoginPanel.this,
+                    "Błąd podczas logowania",
+                    "Błąd",
+                    JOptionPane.ERROR_MESSAGE);
+            }
 
-                //JOptionPane.showMessageDialog(LoginPanel.this, "Błąd podczas logowania", "Błąd", JOptionPane.ERROR_MESSAGE);
-                passwordField.setText("");
-            }
-            else {
-                JOptionPane.showMessageDialog(LoginPanel.this, "Wpisz wszystkie dane", "Błąd", JOptionPane.ERROR_MESSAGE);
-            }
+            //JOptionPane.showMessageDialog(LoginPanel.this, "Błąd podczas logowania", "Błąd", JOptionPane.ERROR_MESSAGE);
+            passwordField.setText("");
         });
         goToRegistration.addActionListener(e -> {
             changePanel(new RegistrationPanel());
@@ -118,7 +132,6 @@ public class LoginPanel extends JPanel {
         frame.add(new LoginPanel());
         frame.revalidate();
         frame.repaint();
-
     }
 
 }
