@@ -77,6 +77,7 @@ class TestDatabase
 
     @Test
     void getUserData() throws SQLException {
+
         var id = 1;
         String sqlStatement = "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id = ?";
 
@@ -112,7 +113,7 @@ class TestDatabase
     @Test
     void getUserApplications()throws SQLException {
         var id = 1;
-        String sqlStatement = "SELECT type,city,price from (Applications join Users on Users.id=Application.id_user) join Offers on Application.id_offer = Offers.id where Users.id = ?";
+        String sqlStatement = "SELECT type,city,price from (applicants join Users on Users.id=applicants.user_id) join Offers on applicants.offer_id = Offers.id where Users.id = ?";
 
         try (var mockStatement = mock(PreparedStatement.class)) {
             var mockRez = mock(ResultSet.class);
@@ -122,14 +123,11 @@ class TestDatabase
 
             sut.getUserApplications(id);
 
-            verify(mockConnection, times(1)).prepareStatement(sqlStatement, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         }
     }
 
-//    @Test
-//    void addNewOfferWhenUserDontExist()
-//    {
-//    }
+
 
     @Test
     void addNewOfferWhenUserExists()throws SQLException
@@ -151,41 +149,42 @@ class TestDatabase
             verify(mockStatement, times(1)).executeUpdate(anyString());
         }
     }
-//
-//    @Test
-//    void addNewAplicantWhenUserDontExist()
-//    {
-//
-//    }
-//
-//    @Test
-//    void addNewAplicantWhenUserExists()
-//    {
-//
-//    }
+    @Test
+    void assignUserToOffer()throws SQLException {
 
-//    @Test
-//    void assignUserToOffer()throws SQLException {
-//        var user_id = 1;
-//        var offer_id = 1;
-//
-//
-//        try (var mockStatement = mock(Statement.class))
-//        {
-//            when(mockConnection.createStatement()).thenReturn(mockStatement);
-//            when(mockStatement.executeUpdate(anyString())).thenReturn(0);
-//
-//            sut.AssignUserToOffer(offer_id,user_id);
-//
-//            verify(mockConnection, times(1)).createStatement();
-//            verify(mockStatement, times(1)).executeUpdate(anyString());
-//        }
-//    }
+        var user_id = 1;
+        var offer_id = 1;
 
 
-//    @Test
-//    void countApplications() throws SQLException{
-//        int offer_id;
-//        //TODO
-//    }
+        try (var mockStatement = mock(Statement.class))
+        {
+            when(mockConnection.createStatement()).thenReturn(mockStatement);
+            when(mockStatement.executeUpdate(anyString())).thenReturn(0);
+
+            sut.assignUserToOffer(offer_id,user_id);
+
+            verify(mockConnection, times(1)).createStatement();
+            verify(mockStatement, times(1)).executeUpdate(anyString());
+        }
+    }
+
+
+    @Test
+    void countApplications() throws SQLException {
+
+        int offerId = 1;
+        String sqlStatement = "SELECT COUNT(*) FROM applicants WHERE offer_id=" + offerId;
+
+
+        try (var mockStatement = mock(PreparedStatement.class)) {
+            var mockRez = mock(ResultSet.class);
+
+            when(mockConnection.prepareStatement(sqlStatement)).thenReturn(mockStatement);
+            when(mockStatement.executeQuery()).thenReturn(mockRez);
+
+            sut.countApplications(offerId);
+
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
+        }
+    }
 }
