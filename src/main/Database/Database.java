@@ -20,8 +20,10 @@ public class Database {
     public Connection conn = null;
 
     public void connect() {
+
         Properties prop = new Properties();
-        try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env")) {
+        try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env"))
+        {
             prop.load(input);
             Class.forName("org.postgresql.Driver");
 
@@ -96,18 +98,22 @@ public class Database {
     {
         connect();
         ArrayList<String> data = new ArrayList<>();
-        String updateString = "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id = " + id;
+        String userSelect = MessageFormat.format(
+                "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id =''{1}''",
+                id);
+
         try {
             Statement stmt = conn.createStatement();
-            ResultSet checkExistID = stmt.executeQuery(updateString);
-            while(checkExistID.next()){
-                data.add(checkExistID.getString(1));
-                data.add(checkExistID.getString(2));
-                data.add(checkExistID.getString(3));
-                data.add(checkExistID.getString(4));
-                System.out.println("Pobrano dane uzytkownika: " + checkExistID.getString(1) + " " +checkExistID.getString(2) + " " + checkExistID.getString(3) + " " + checkExistID.getString(4));
+            if(stmt!=null) {
+                ResultSet checkExistID = stmt.executeQuery(userSelect);
+                while (checkExistID.next()) {
+                    data.add(checkExistID.getString(1));
+                    data.add(checkExistID.getString(2));
+                    data.add(checkExistID.getString(3));
+                    data.add(checkExistID.getString(4));
+                    System.out.println("Pobrano dane uzytkownika: " + checkExistID.getString(1) + " " + checkExistID.getString(2) + " " + checkExistID.getString(3) + " " + checkExistID.getString(4));
+                }
             }
-
         }
         catch (SQLException e){
             System.out.println("getUserData: " + e.getMessage());
