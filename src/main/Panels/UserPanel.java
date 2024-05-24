@@ -1,8 +1,6 @@
 package main.Panels;
-
 import main.Application;
 import main.Database.Database;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -27,15 +25,16 @@ public class UserPanel extends JPanel {
     private JButton buttonAdd;
     private JButton buttonAddOffer;
     private JButton showMainPanelButton;
+    private  JPanel innerPanel;
 
     public UserPanel() {
         db = new Database();
         init();
     }
 
-    public void init() {
+    public void initComponents()
+    {
         final var iconPath = Path.of(Application.assetsDir.toString(), "user.jpg");
-
         image = new ImageIcon(iconPath.toString());
         label = new JLabel(image);
         constraints = new GridBagConstraints();
@@ -46,24 +45,30 @@ public class UserPanel extends JPanel {
         offers = db.getUserOffers(Application.getInstance().getUserId());
         label.setBorder(BorderFactory.createBevelBorder(1));
 
+    }
+    public void init() {
+
+        initComponents();
+        innerPanel = new JPanel(new GridBagLayout()); // Panel, który będzie zawierał całą zawartość
         setLayout(new GridBagLayout());
         String[] titles = {"imie: ", "nazwisko: ", "email: ", "numer telefonu: "};
         ArrayList<JLabel> dataLabels = new ArrayList<>();
 
         for (int i = 0; i < titles.length; i++) {
-            dataLabels.add(new JLabel(titles[i] + data.get(i)));//+data.get(i)
+            dataLabels.add(new JLabel(titles[i] + data.get(i)));
         }
 
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 1;
-        add(label, constraints);
+        innerPanel.add(label, constraints);
         constraints.gridx = 0;
-
         constraints.gridy = 1;
+
         for (int i = 0; i < titles.length; i++) {
             ++constraints.gridy;
-            add(dataLabels.get(i), constraints);
+            innerPanel.add(dataLabels.get(i), constraints);
         }
+
         header.add("typ");
         header.add("miasto");
         header.add("cena");
@@ -79,43 +84,62 @@ public class UserPanel extends JPanel {
         pane.setPreferredSize(new Dimension(600, 200));
         ++constraints.gridy;
         constraints.insets = new Insets(5, 5, 5, 5);
-        add(pane, constraints);
+        innerPanel.add(pane, constraints);
         ++constraints.gridy;
 
         JLabel title = new JLabel("Oferty na które aplikowałeś:", SwingConstants.CENTER);
         if (!applications.isEmpty())
-            add(title, constraints);
+            innerPanel.add(title, constraints);
 
         for (int j = 0; j < applications.size(); j++) {
             ++constraints.gridy;
             ContentPanel empty = new ContentPanel(j, "Offer " + applications.get(j).get(0),
                     "Location " + applications.get(j).get(1), applications.get(j).get(2));
-            add(empty, constraints);
+            innerPanel.add(empty, constraints);
         }
 
         buttonAdd = new JButton("Dodaj nowe ogłoszenie");
         ++constraints.gridy;
         buttonAdd.addActionListener(e -> showOfferForm());
-        add(buttonAdd, constraints);
+        innerPanel.add(buttonAdd, constraints);
 
         showMainPanelButton = new JButton("Pokaż panel główny");
         showMainPanelButton.addActionListener(e -> showMainPanel());
         ++constraints.gridy;
-        add(showMainPanelButton, constraints);
+        innerPanel.add(showMainPanelButton, constraints);
 
-        setBackground(new Color(255, 240, 206, 255));
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        innerPanel.setBackground(new Color(255, 240, 206, 255));
+        innerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Panel użytkownika",
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
+
+        JButton logoutButton = new JButton("Wyloguj");
+        logoutButton.addActionListener(e -> logout());
+        constraints.gridx = 2; // Ustawienie pozycji w kolumnie 2 (po prawej stronie)
+        constraints.anchor = GridBagConstraints.EAST; // Umiejscowienie przycisku po prawej stronie
+        innerPanel.add(logoutButton, constraints); // Dodajemy przycisk wylogowania do innerPanel
+
+
+        JScrollPane scrollPane = new JScrollPane(innerPanel); // Tworzymy JScrollPane, który zawiera innerPanel
+        setLayout(new BorderLayout()); // Ustawiamy layout na BorderLayout
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // Wyłączamy poziome przewijanie
+        add(scrollPane, BorderLayout.CENTER); // Dodajemy JScrollPane do UserPanel
+
+
         setVisible(true);
+
+    }
+    private void logout() {
+        Application.getInstance().logout();
     }
 
     private void AddOffer(String city, String type, float price, String description) {
-        remove(offerAddPanel);
-        remove(buttonAddOffer);
-        revalidate();
-        repaint();
+
+        innerPanel.remove(offerAddPanel);
+        innerPanel.remove(buttonAddOffer);
+        innerPanel.revalidate();
+        innerPanel.repaint();
 
         JLabel infoLabel = new JLabel("Dodano ofertę", SwingConstants.CENTER);
         infoLabel.setText("Dodano ofertę");
@@ -125,24 +149,28 @@ public class UserPanel extends JPanel {
             infoLabel.setText("Błąd");
         }
         ++constraints.gridy;
-        add(infoLabel, constraints);
+        innerPanel.add(infoLabel, constraints);
 
         Timer timer = new Timer(4000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 infoLabel.setText("");
-                add(buttonAdd, constraints);
+                innerPanel.add(buttonAdd, constraints);
                 ((Timer) e.getSource()).stop();
             }
         });
         timer.setRepeats(false);
         timer.start();
+                ++constraints.gridy;
+        innerPanel.add(showMainPanelButton,constraints);
+
     }
 
     private void showOfferForm() {
-        remove(buttonAdd);
-        revalidate();
 
+        innerPanel.remove(buttonAdd);
+        innerPanel.remove(showMainPanelButton);
+        innerPanel.revalidate();
         offerAddPanel = new JPanel();
         offerAddPanel.setVisible(false);
         offerAddPanel.setLayout(new GridLayout(4, 2));
@@ -183,10 +211,12 @@ public class UserPanel extends JPanel {
                 BorderFactory.createEtchedBorder(), "Formularz zgłoszenia"));
         offerAddPanel.updateUI();
 
-        add(offerAddPanel, constraints);
+        innerPanel.add(offerAddPanel, constraints);
         offerAddPanel.setVisible(true);
         ++constraints.gridy;
-        add(buttonAddOffer, constraints);
+        innerPanel.add(buttonAddOffer, constraints);
+
+
     }
 
     private void showMainPanel() {

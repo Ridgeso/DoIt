@@ -37,12 +37,15 @@ public class Application extends JFrame {
     public int getUserId() {
         return userId;
     }
-
+    public void logout(){
+        setPanel(new LoginPanel());
+    }
     public void setUserId(int newUserId) {
         this.userId = newUserId;
     }
 
     private void init() {
+
         setTitle("DoIt");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

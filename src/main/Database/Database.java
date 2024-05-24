@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import main.Application;
 import main.Database.Models.Offer;
 
+import javax.sound.midi.Soundbank;
 import javax.swing.text.Style;
 
 public class Database {
@@ -99,7 +100,7 @@ public class Database {
         connect();
         ArrayList<String> data = new ArrayList<>();
         String userSelect = MessageFormat.format(
-                "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id =''{1}''",
+                "SELECT first_name,last_name,email,phone_number FROM users WHERE users.id =''{0}'';",
                 id);
 
         try {
@@ -128,7 +129,7 @@ public class Database {
         connect();
         Vector<Vector<String>> data = new Vector<>();
         ResultSet myRs = null;
-        String updateString = "SELECT type,city,price,description from Offers join Users on Users.id=Offers.id where Users.id = ?";
+        String updateString = "SELECT type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
 
         try (PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 
@@ -154,9 +155,10 @@ public class Database {
         return data;
     }
     public Vector<Vector<String>> getUserApplications(int id){
+
         connect();
         Vector<Vector<String>> data = new Vector<>();
-        String updateString = "SELECT type,city,price from (applicants join Users on Users.id=applicants.user_id) join Offers on applicants.offer_id = Offers.id where Users.id = ?";
+        String updateString = "SELECT type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
         ResultSet myRs = null;
 
         try(PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE) ){
@@ -166,9 +168,9 @@ public class Database {
                 while (myRs.next()) {
 
                     Vector<String> tmp = new Vector<>();
-                    tmp.add((String) myRs.getObject(0));
-                    tmp.add((String) (myRs.getObject(1)));
-                    tmp.add((String) (myRs.getObject(2)));
+                    tmp.add((String) myRs.getString("type"));
+                    tmp.add((String) (myRs.getString("city")));
+                    tmp.add((String) (myRs.getString("price")));
                     data.add(tmp);
 
                 }
@@ -185,7 +187,6 @@ public class Database {
     {
 
         connect();
-
         Statement stmt = conn.createStatement();
         if (user_id == -1){
             System.out.println("User doesn't exist");
@@ -202,10 +203,11 @@ public class Database {
     public Offer getOfferById(String id) {
         connect();
         Offer offer = null;
-        String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_uzytkownika WHERE Offers.id = ?";
+        String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user WHERE Offers.id = ?";
         try (PreparedStatement Ps = conn.prepareStatement(updateString)) {
             Ps.setInt(1, Integer.parseInt(id));
             try (ResultSet myRs = Ps.executeQuery()) {
+
                 if (myRs.next()) {
                     String type = myRs.getString("type");
                     String city = myRs.getString("city");
