@@ -21,6 +21,7 @@ public class MainPanel extends JPanel {
     private Database db;
     private GridBagConstraints constraints;
     private JTable table;
+    private JFrame offerDetailsFrame;
 
     public MainPanel() {
         db = new Database();
@@ -125,14 +126,16 @@ public class MainPanel extends JPanel {
     }
 
     private void showOfferDetails(Offer offer) {
+        if (offerDetailsFrame != null) {
+            offerDetailsFrame.dispose();
+        }
+
         OfferPanel offerPanel = new OfferPanel(offer);
-        JFrame frame = new JFrame("Offer Details");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.getContentPane().add(offerPanel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        offerDetailsFrame = new JFrame("Offer Details");
+        offerDetailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        offerDetailsFrame.getContentPane().add(offerPanel);
+        offerDetailsFrame.pack();
+        offerDetailsFrame.setLocationRelativeTo(null);
+        offerDetailsFrame.setVisible(true);
     }
 }
-
-
