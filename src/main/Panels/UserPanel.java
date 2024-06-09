@@ -220,6 +220,6 @@ public class UserPanel extends JPanel {
     }
 
     private void showMainPanel() {
-        Application.getInstance().setPanel(new MainPanel());
+        Application.getInstance().setPanel(new MainPanel(db));
     }
 }

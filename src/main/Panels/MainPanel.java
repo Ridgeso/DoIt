@@ -18,13 +18,13 @@ import java.awt.event.MouseEvent;
 
 public class MainPanel extends JPanel {
 
-    private Database db;
+    private Database _db;
     private GridBagConstraints constraints;
     private JTable table;
     private JFrame offerDetailsFrame;
 
-    public MainPanel() {
-        db = new Database();
+    public MainPanel(Database db) {
+        _db = db;
         init();
     }
 
@@ -44,7 +44,7 @@ public class MainPanel extends JPanel {
         constraints.gridx = 1;
         add(logoutButton, constraints);
 
-        List<Offer> offers = db.getAllOffers();
+        List<Offer> offers = _db.getAllOffers();
         Vector<Vector<Object>> data = new Vector<>();
         for (Offer offer : offers) {
             Vector<Object> rowData = new Vector<>();
@@ -93,7 +93,7 @@ public class MainPanel extends JPanel {
         Application.getInstance().setPanel(new LoginPanel());
     }
 
-    private class ButtonRenderer extends JButton implements TableCellRenderer {
+    public class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
         }
@@ -125,7 +125,7 @@ public class MainPanel extends JPanel {
         }
     }
 
-    private void showOfferDetails(Offer offer) {
+    public void showOfferDetails(Offer offer) {
         if (offerDetailsFrame != null) {
             offerDetailsFrame.dispose();
         }

@@ -16,7 +16,6 @@ public class OfferPanel extends JPanel {
     private JButton backButton, applyButton;
     JPanel fieldsPanel;
     private static final Database db = new Database();
-
     public OfferPanel(int id, String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
         applicationCounter = new JLabel("Liczba aplikacji: "+ db.countApplications(id)); //TODO dodać do tego countApplications(_database.offer_id)
         phoneNumberLabel = new JLabel("Numer telefonu:");
@@ -83,7 +82,7 @@ public class OfferPanel extends JPanel {
         add(fieldsPanel, BorderLayout.CENTER);
 
         backButton.addActionListener(e -> {
-            changePanel(new MainPanel());
+            changePanel(new MainPanel(db));
         });
 
         applyButton.addActionListener(e -> {
