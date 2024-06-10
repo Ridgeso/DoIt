@@ -231,7 +231,7 @@ public class Database {
             if(Ps != null) {
                 Ps.setInt(1, id);
                 myRs = Ps.executeQuery();
-                while (myRs.next()) {
+                while (myRs.next()) {   
 
                     Vector<String> tmp = new Vector<>();
                     String fname = myRs.getString("first_name");
