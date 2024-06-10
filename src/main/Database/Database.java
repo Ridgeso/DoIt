@@ -124,12 +124,13 @@ public class Database {
         return data;
     }
 
-    public Vector<Vector<String>> getUserOffers(int id)
+    public Vector<Offer> getUserOffers(int id)
     {
         connect();
-        Vector<Vector<String>> data = new Vector<>();
+        Vector<Offer> data = new Vector<>();
         ResultSet myRs = null;
-        String updateString = "SELECT type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
+        String updateString = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
+        Offer offer = null;
 
         try (PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 
@@ -138,12 +139,13 @@ public class Database {
                 myRs = Ps.executeQuery();
                 while (myRs.next()) {
 
-                    Vector<String> tmp = new Vector<>();
-                    tmp.add(myRs.getObject(1).toString());
-                    tmp.add((myRs.getObject(2).toString()));
-                    tmp.add((myRs.getObject(3).toString()));
-                    tmp.add((myRs.getObject(4).toString()));
-                    data.add(tmp);
+                    String OfferID = myRs.getString("id");
+                    String type = myRs.getString("type");
+                    String city = myRs.getString("city");
+                    String price = myRs.getString("price");
+                    String description = myRs.getString("description");
+                    offer = new Offer(Integer.parseInt(OfferID), "", Double.parseDouble(price), type, description, city, price);
+                    data.add(offer);
                 }
             }
         }
@@ -154,11 +156,12 @@ public class Database {
         closeConnection();
         return data;
     }
+
     public Vector<Vector<String>> getUserApplications(int id){
 
         connect();
         Vector<Vector<String>> data = new Vector<>();
-        String updateString = "SELECT type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
+        String updateString = "SELECT offer_id,type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
         ResultSet myRs = null;
 
         try(PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE) ){
@@ -168,6 +171,7 @@ public class Database {
                 while (myRs.next()) {
 
                     Vector<String> tmp = new Vector<>();
+                    tmp.add((String) myRs.getString("offer_id"));
                     tmp.add((String) myRs.getString("type"));
                     tmp.add((String) (myRs.getString("city")));
                     tmp.add((String) (myRs.getString("price")));
@@ -214,8 +218,7 @@ public class Database {
                     String price = myRs.getString("price");
                     String description = myRs.getString("description");
                     String phoneNumber = myRs.getString("phone_number");
-                    double rate = myRs.getDouble("rate");
-                    offer = new Offer(Integer.parseInt(id), phoneNumber, rate, type, description, city, price);
+                    offer = new Offer(Integer.parseInt(id), phoneNumber, Double.parseDouble(price), type, description, city, price);
                 }
             }
         } catch (SQLException e) {

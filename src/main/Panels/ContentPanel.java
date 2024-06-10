@@ -31,8 +31,8 @@ public class ContentPanel extends JPanel {
                 System.out.println("Viewing offer: " + offerName);
 //                Implementacja z łączeniem do bazy danych, będzie działać gdy zacznie działac wyciąganie oferty po ID z bazy danych
 //
-//                viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id))).getPanel());
-                  viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
+                  viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id))).getPanel());
+           //       viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
             }
         });
 
