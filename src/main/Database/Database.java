@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import main.Application;
 import main.Database.Models.Offer;
+import main.Database.Models.User;
 
 import javax.sound.midi.Soundbank;
 import javax.swing.text.Style;
@@ -185,6 +186,67 @@ public class Database {
         }
         closeConnection();
         return data;
+
+    }
+    public Vector<User> getApplicantsData(int id){
+
+        connect();
+        Vector<User> data = new Vector<>();
+        String updateString = "SELECT first_name,last_name,email,phone_number from (applicants join users on users.id=applicants.user_id)" +
+                " join offers on applicants.offer_id = offers.id where offers.id = ?";
+        ResultSet myRs = null;
+        User user = null;
+        try(PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE) ){
+            if(Ps != null) {
+                Ps.setInt(1, id);
+                myRs = Ps.executeQuery();
+                while (myRs.next()) {
+
+                    Vector<String> tmp = new Vector<>();
+                    String fname = myRs.getString("first_name");
+                    String lname = myRs.getString("last_name");
+                    String email = myRs.getString("email");
+                    String phoneNumber = myRs.getString("phone_number");
+                    user = new User(fname,lname,email,"","",phoneNumber);
+                    data.add(user);
+                }
+            }
+        }
+        catch (SQLException e){
+            System.out.println("getUserApplications: " + e.getMessage());
+        }
+        closeConnection();
+        return data;
+
+    }
+    public User getAnnoucerData(int id){
+
+        connect();
+        Vector<User> data = new Vector<>();
+        String updateString = " SELECT first_name,last_name,email,phone_number from" +
+                " Users join offers on Users.id = offers.id_user where offers.id = ?";
+        ResultSet myRs = null;
+        User user = null;
+        try(PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE) ){
+            if(Ps != null) {
+                Ps.setInt(1, id);
+                myRs = Ps.executeQuery();
+                while (myRs.next()) {
+
+                    Vector<String> tmp = new Vector<>();
+                    String fname = myRs.getString("first_name");
+                    String lname = myRs.getString("last_name");
+                    String email = myRs.getString("email");
+                    String phoneNumber = myRs.getString("phone_number");
+                    user = new User(fname,lname,email,"","",phoneNumber);
+                }
+            }
+        }
+        catch (SQLException e){
+            System.out.println("getUserApplications: " + e.getMessage());
+        }
+        closeConnection();
+        return user;
 
     }
     public void addNewOfferWhenUserExists(Integer user_id, String city, String type, float price, String description)throws SQLException
