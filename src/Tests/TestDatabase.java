@@ -8,23 +8,27 @@ import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import main.Database.Database;
+import org.mockito.Mockito;
 
 class TestDatabase {
-    Database sut;
+    private Database sut;
+    private Connection mockConnection;
+    private Statement mockStatement;
+
     static MockedStatic<DriverManager> mockDriverManager;
-    Connection mockConnection;
 
     void expectGetConnection()
             throws SQLException {
         mockDriverManager = mockStatic(DriverManager.class);
         mockConnection = mock(Connection.class);
-        mockDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
-                .thenReturn(mockConnection);
+        mockStatement = Mockito.mock(Statement.class);
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
     }
 
     @Test
@@ -37,8 +41,8 @@ class TestDatabase {
     @BeforeEach
     void setUp()
             throws SQLException {
-        sut = new Database();
         expectGetConnection();
+        sut = new Database(mockConnection);
     }
 
 
@@ -117,10 +121,11 @@ class TestDatabase {
     void getUserData() throws SQLException {
 
         var id = 1;
-        String sqlStatement = "SELECT first_name,last_name,email,phone_number FROM Users WHERE Users.id =" +id;
+        String sqlStatement = "SELECT first_name,last_name,email,phone_number FROM users WHERE users.id =?;";
+
         try (var mockStatement = mock(PreparedStatement.class)) {
 
-            var mockRez = mock(ResultSet.class);
+            ResultSet mockRez = mock(ResultSet.class);
 
             when(mockConnection.prepareStatement(sqlStatement)).thenReturn(mockStatement);
             when(mockStatement.executeQuery()).thenReturn(mockRez);
@@ -138,7 +143,7 @@ class TestDatabase {
 //            assertEquals("BName", userData.get(1));
 //            assertEquals("email", userData.get(2));
 //            assertEquals("phonenumber", userData.get(3));
-//            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
 
         }
     }
@@ -146,8 +151,7 @@ class TestDatabase {
     void getUserApplications()throws SQLException {
 
         var id = 1;
-        String sqlStatement = "SELECT type,city,price from (applicants join Users on Users.id=applicants.user_id) " +
-                "join Offers on applicants.offer_id = Offers.id where Users.id = ?";
+        String sqlStatement = "SELECT offer_id,type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
 
         try (var mockStatement = mock(PreparedStatement.class)) {
             var mockRez = mock(ResultSet.class);
@@ -169,7 +173,7 @@ class TestDatabase {
 //            assertEquals("a@student.agh.edu.pl", userData.get(0).get(2));
 //            assertEquals("722-050-011", userData.get(0).get(3));
 
-//            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         }
     }
 
@@ -237,7 +241,7 @@ class TestDatabase {
     void getUserOffers()throws SQLException
     {
         var id = 1;
-        String sqlStatement = "SELECT type,city,price,description from Offers join Users on Users.id=Offers.id where Users.id = ?";
+        String sqlStatement = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
 
         try (var mockStatement = mock(PreparedStatement.class)) {
             var mockRez = mock(ResultSet.class);
@@ -247,7 +251,7 @@ class TestDatabase {
 
             sut.getUserOffers(id);
 
-//            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         }
     }
 }

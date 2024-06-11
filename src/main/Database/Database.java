@@ -16,9 +16,18 @@ import main.Database.Models.Offer;
 
 import javax.sound.midi.Soundbank;
 import javax.swing.text.Style;
+import javax.xml.crypto.Data;
 
 public class Database {
     public Connection conn = null;
+    private boolean use_test = false;
+
+    public Database(){}
+    public  Database(Connection con){
+        conn = con;
+        use_test = true;
+
+    }
 
     public void connect() {
 
@@ -53,7 +62,8 @@ public class Database {
 
     public void addNewUser(String firstName, String lastName, String email, String login, String password, String phoneNumber){
 
-        connect();
+        if(!use_test)
+            connect();
         Statement stmt = null;
 
         try {
@@ -66,11 +76,13 @@ public class Database {
         catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        closeConnection();
+        if(!use_test)
+            closeConnection();
     }
 
     public int checkIfUserExist(String userFName, String userLName) throws SQLException {
-        connect();
+        if(!use_test)
+            connect();
         Statement stmt = conn.createStatement();
         String userSelect = MessageFormat.format(
             "SELECT id FROM users WHERE first_name = ''{0}'' and last_name = ''{1}'';",
@@ -78,12 +90,14 @@ public class Database {
             userLName);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
         int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return user_id;
     }
 
     public int checkUserLogin(String login, String password) throws SQLException {
-        connect();
+        if(!use_test)
+            connect();
         Statement stmt = conn.createStatement();
         String userSelect = MessageFormat.format(
             "SELECT id FROM users WHERE login = ''{0}'' and password = ''{1}'';",
@@ -91,42 +105,51 @@ public class Database {
             password);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
         int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return user_id;
     }
 
     public ArrayList<String> getUserData(int id)
     {
-        connect();
+        if(!use_test)
+            connect();
         ArrayList<String> data = new ArrayList<>();
-        String userSelect = MessageFormat.format(
-                "SELECT first_name,last_name,email,phone_number FROM users WHERE users.id =''{0}'';",
-                id);
+        ResultSet myRs = null;
+        String userSelect = "SELECT first_name,last_name,email,phone_number FROM users WHERE users.id =?;";
 
-        try {
-            Statement stmt = conn.createStatement();
-            if(stmt!=null) {
-                ResultSet checkExistID = stmt.executeQuery(userSelect);
-                while (checkExistID.next()) {
-                    data.add(checkExistID.getString(1));
-                    data.add(checkExistID.getString(2));
-                    data.add(checkExistID.getString(3));
-                    data.add(checkExistID.getString(4));
-                    System.out.println("Pobrano dane uzytkownika: " + checkExistID.getString(1) + " " + checkExistID.getString(2) + " " + checkExistID.getString(3) + " " + checkExistID.getString(4));
+        try (PreparedStatement Ps = conn.prepareStatement(userSelect, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)){
+            if(Ps != null){
+                Ps.setInt(1, id);
+                myRs = Ps.executeQuery();
+                if(myRs!=null) {
+                    while (myRs.next()) {
+                        data.add(myRs.getString(1));
+                        data.add(myRs.getString(2));
+                        data.add(myRs.getString(3));
+                        data.add(myRs.getString(4));
+                        System.out.println("Pobrano dane uzytkownika: " + myRs.getString(1) + " " + myRs.getString(2) + " " + myRs.getString(3) + " " + myRs.getString(4));
+                    }
                 }
             }
+
         }
         catch (SQLException e){
             System.out.println("getUserData: " + e.getMessage());
         }
+        catch (NullPointerException e){
+            System.out.println("Null pointer caught");
+        }
 
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return data;
     }
 
     public Vector<Offer> getUserOffers(int id)
     {
-        connect();
+        if(!use_test)
+            connect();
         Vector<Offer> data = new Vector<>();
         ResultSet myRs = null;
         String updateString = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
@@ -153,13 +176,14 @@ public class Database {
             System.out.println("getUserOffers: " + e.getMessage());
         }
 
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return data;
     }
 
     public Vector<Vector<String>> getUserApplications(int id){
-
-        connect();
+        if(!use_test)
+            connect();
         Vector<Vector<String>> data = new Vector<>();
         String updateString = "SELECT offer_id,type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
         ResultSet myRs = null;
@@ -183,14 +207,15 @@ public class Database {
         catch (SQLException e){
             System.out.println("getUserApplications: " + e.getMessage());
         }
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return data;
 
     }
     public void addNewOfferWhenUserExists(Integer user_id, String city, String type, float price, String description)throws SQLException
     {
-
-        connect();
+        if(!use_test)
+            connect();
         Statement stmt = conn.createStatement();
         if (user_id == -1){
             System.out.println("User doesn't exist");
@@ -201,11 +226,13 @@ public class Database {
         stmt.executeUpdate(insert);
         System.out.println("Urzytkownik dodany");
 
-        closeConnection();
+        if(!use_test)
+            closeConnection();
     }
 
     public Offer getOfferById(String id) {
-        connect();
+        if(!use_test)
+            connect();
         Offer offer = null;
         String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user WHERE Offers.id = ?";
         try (PreparedStatement Ps = conn.prepareStatement(updateString)) {
@@ -227,13 +254,15 @@ public class Database {
             System.out.println(e.getMessage());
         }
 
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return offer;
     }
     
     
     public List<Offer> getAllOffers() {
-        connect();
+        if(!use_test)
+            connect();
         List<Offer> offers = new ArrayList<>();
         String queryString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user";
         try (PreparedStatement ps = conn.prepareStatement(queryString);
@@ -254,13 +283,15 @@ public class Database {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    
-        closeConnection();
+
+        if(!use_test)
+            closeConnection();
         return offers;
     }
     public void assignUserToOffer(int offerId, int userId) {
         try{
-            connect();
+            if(!use_test)
+                connect();
             Statement stmt = conn.createStatement();
             if (userId== -1){
                 System.out.println("User doesn't exist");
@@ -272,10 +303,12 @@ public class Database {
             stmt.executeUpdate(queryString);
             System.out.println("Pomyślnie zaaplikowano");
         }catch (Exception e){}
-        closeConnection();
+        if(!use_test)
+            closeConnection();
     }
     public int countApplications(int offer_id){
-        connect();
+        if(!use_test)
+            connect();
         String queryString = "SELECT COUNT(*) FROM applicants WHERE offer_id=" + offer_id;
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {
             try (ResultSet myRs = ps.executeQuery()) {
@@ -287,7 +320,8 @@ public class Database {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        closeConnection();
+        if(!use_test)
+            closeConnection();
         return 0;
 
     }
