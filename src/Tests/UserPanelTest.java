@@ -75,31 +75,31 @@ public class UserPanelTest {
         assertTrue(userPanel.getInnerPanel().getComponent(3) instanceof JLabel);
         assertTrue(userPanel.getInnerPanel().getComponent(4) instanceof JLabel);
 
-        JScrollPane scrollPane = (JScrollPane) userPanel.getInnerPanel().getComponent(5);
+        JScrollPane scrollPane = (JScrollPane) userPanel.getInnerPanel().getComponent(6);
         JTable table = (JTable) scrollPane.getViewport().getView();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         assertEquals(1, model.getRowCount());
-        assertEquals(4, model.getColumnCount());
+        assertEquals(5, model.getColumnCount());
     }
 
     @Test
     public void testLogout() {
-        JButton logoutButton = (JButton) userPanel.getInnerPanel().getComponent(9);
+        JButton logoutButton = (JButton) userPanel.getInnerPanel().getComponent(5);
         logoutButton.doClick();
         verify(mockApplication, times(1)).logout();
     }
 
     @Test
     public void test_applications() {
-        JButton application_button = (JButton) userPanel.getInnerPanel().getComponent(8);
+        JButton application_button = (JButton) userPanel.getInnerPanel().getComponent(9);
         application_button.doClick();
-        int expectedComponentCount = 11;
+        int expectedComponentCount = 12;
         assertEquals(expectedComponentCount, userPanel.getInnerPanel().getComponentCount());
     }
 
     @Test
     public void test_addof() {
-        JButton offer_button = (JButton) userPanel.getInnerPanel().getComponent(6);
+        JButton offer_button = (JButton) userPanel.getInnerPanel().getComponent(7);
         offer_button.doClick();
         int expectedComponentCount = 11;
         assertEquals(expectedComponentCount, userPanel.getInnerPanel().getComponentCount());
@@ -107,7 +107,7 @@ public class UserPanelTest {
 
     @Test
     public void test_showMainPanel() {
-        JButton application_see = (JButton) userPanel.getInnerPanel().getComponent(7);
+        JButton application_see = (JButton) userPanel.getInnerPanel().getComponent(8);
         application_see.doClick();
         verify(mockApplication, times(1)).setPanel(any(MainPanel.class));
     }
