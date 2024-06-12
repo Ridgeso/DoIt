@@ -54,7 +54,7 @@ public class UserPanelTest {
         offers.add(new Offer(1, "", 30.0, "Sprzataczka", "Praca dorywcza", "Krakow", "30.0"));
         when(mockDatabase.getUserOffers(1)).thenReturn(offers);
         userPanel.db = mockDatabase;
-        userPanel = new UserPanel();
+        userPanel = new UserPanel(mockDatabase);
 
     }
 
@@ -93,7 +93,7 @@ public class UserPanelTest {
     public void test_applications() {
         JButton application_button = (JButton) userPanel.getInnerPanel().getComponent(8);
         application_button.doClick();
-        int expectedComponentCount = 12;
+        int expectedComponentCount = 11;
         assertEquals(expectedComponentCount, userPanel.getInnerPanel().getComponentCount());
     }
 

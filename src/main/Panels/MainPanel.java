@@ -86,11 +86,11 @@ public class MainPanel extends JPanel {
     }
 
     private void showUserProfile() {
-        Application.getInstance().setPanel(new UserPanel());
+        Application.getInstance().setPanel(new UserPanel(_db));
     }
 
     private void logout() {
-        Application.getInstance().setPanel(new LoginPanel());
+        Application.getInstance().setPanel(new LoginPanel(_db));
     }
 
     public class ButtonRenderer extends JButton implements TableCellRenderer {
@@ -130,7 +130,7 @@ public class MainPanel extends JPanel {
             offerDetailsFrame.dispose();
         }
 
-        OfferPanel offerPanel = new OfferPanel(offer);
+        OfferPanel offerPanel = new OfferPanel(offer, _db);
         offerDetailsFrame = new JFrame("Offer Details");
         offerDetailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         offerDetailsFrame.getContentPane().add(offerPanel);

@@ -4,6 +4,8 @@ import javax.swing.*;
 import main.Database.Database;
 
 import javax.swing.border.EmptyBorder;
+import javax.xml.crypto.Data;
+
 import main.Database.Models.Offer;
 import java.awt.*;
 
@@ -15,8 +17,9 @@ public class OfferPanel extends JPanel {
     private JTextArea descriptionArea;
     private JButton backButton, applyButton;
     JPanel fieldsPanel;
-    private static final Database db = new Database();
-    public OfferPanel(int id, String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
+    private static Database db = null;
+    public OfferPanel(int id, String phoneNumber, /*String title, String location,*/ double rate, String type, String description, Database set_db) {
+        db = set_db;
         applicationCounter = new JLabel("Liczba aplikacji: "+ db.countApplications(id)); //TODO dodać do tego countApplications(_database.offer_id)
         phoneNumberLabel = new JLabel("Numer telefonu:");
         titleLabel = new JLabel("Tytuł oferty:");
@@ -105,9 +108,9 @@ public class OfferPanel extends JPanel {
     {
         return fieldsPanel;
     }
-    public OfferPanel(Offer offer) {
+    public OfferPanel(Offer offer, Database db) {
         this(offer.id(),offer.phoneNumber(), offer.rate(),
-                offer.type(), offer.description());
+                offer.type(), offer.description(), db);
     }
 
 
@@ -136,7 +139,7 @@ public class OfferPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        frame.add(new OfferPanel(id,phoneNumber, rate, type, description));
+        frame.add(new OfferPanel(id,phoneNumber, rate, type, description, db));
         frame.revalidate();
         frame.repaint();
     }

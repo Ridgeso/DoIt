@@ -33,9 +33,8 @@ public class UserPanel extends JPanel {
     private JButton see_applications;
     private Boolean see_application;
     private LinkedList<ContentPanel> contentPanels;
-    public UserPanel() {
-        if(db==null)
-            db = new Database();
+    public UserPanel(Database setDB) {
+        db = setDB;
         init();
     }
 

@@ -1,5 +1,6 @@
 package main;
 
+import main.Database.Database;
 import main.Panels.LoginPanel;
 import main.Panels.MainPanel;
 
@@ -8,10 +9,11 @@ import java.awt.*;
 import java.nio.file.Path;
 
 public class Application extends JFrame {
-
-    public static void appMain() {
+    private static Database _db = null;
+    public static void appMain(Database db) {
         if (instance == null) {
-            new Application();
+            _db = db;
+            new Application(_db);
         }
     }
 
@@ -21,10 +23,10 @@ public class Application extends JFrame {
 
     public static final Path assetsDir = Path.of("assets");
 
-    private Application() {
+    private Application(Database db) {
         instance = this;
         init();
-        setPanel(new LoginPanel());
+        setPanel(new LoginPanel(db));
     }
 
     public void setPanel(JPanel panel) {
@@ -38,7 +40,7 @@ public class Application extends JFrame {
         return userId;
     }
     public void logout(){
-        setPanel(new LoginPanel());
+        setPanel(new LoginPanel(_db));
     }
     public void setUserId(int newUserId) {
         this.userId = newUserId;
