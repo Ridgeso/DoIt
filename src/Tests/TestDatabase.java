@@ -143,7 +143,7 @@ class TestDatabase {
 //            assertEquals("BName", userData.get(1));
 //            assertEquals("email", userData.get(2));
 //            assertEquals("phonenumber", userData.get(3));
-            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
         }
     }
