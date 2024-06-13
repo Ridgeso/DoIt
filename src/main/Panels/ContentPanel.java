@@ -1,5 +1,6 @@
 package main.Panels;
 
+import main.Application;
 import main.Database.Database;
 import javax.swing.*;
 import java.awt.*;
@@ -14,25 +15,27 @@ public class ContentPanel extends JPanel {
     private JButton viewButton;
     private GridBagConstraints constraints = new GridBagConstraints();
     private int id;
-    Database database = new Database();
+//    public Database database = new Database();
+    public Database database = Application.getDatabase();
+
     public ContentPanel(int id, String offerName, String localisation, String price) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEtchedBorder());
 
-        offerNameLabel = new JLabel("Offer Name: " + offerName);
-        localisationLabel = new JLabel("Localisation: " + localisation);
-        priceLabel = new JLabel("Price: " + price +"zł/h");
+        offerNameLabel = new JLabel("Oferta: " + offerName);
+        localisationLabel = new JLabel("Lokalizacja: " + localisation);
+        priceLabel = new JLabel("Cena: " + price +"zł/h");
 
 
-        viewButton = new JButton("View Offer");
+        viewButton = new JButton("Zobacz szczegóły");
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Viewing offer: " + offerName);
 //                Implementacja z łączeniem do bazy danych, będzie działać gdy zacznie działac wyciąganie oferty po ID z bazy danych
 //
-                  viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id))).getPanel());
-           //       viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
+                  viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id)), database).getPanel());
+//                  viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
             }
         });
 

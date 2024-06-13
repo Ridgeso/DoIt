@@ -1,9 +1,13 @@
 package main.Panels;
 
 import javax.swing.*;
+
+import main.Application;
 import main.Database.Database;
 
 import javax.swing.border.EmptyBorder;
+import javax.xml.crypto.Data;
+
 import main.Database.Models.Offer;
 import java.awt.*;
 
@@ -15,8 +19,9 @@ public class OfferPanel extends JPanel {
     private JTextArea descriptionArea;
     private JButton backButton, applyButton;
     JPanel fieldsPanel;
-    private static final Database db = new Database();
+    private static Database db = null;
     public OfferPanel(int id, String phoneNumber, /*String title, String location,*/ double rate, String type, String description) {
+        db = Application.getDatabase();
         applicationCounter = new JLabel("Liczba aplikacji: "+ db.countApplications(id)); //TODO dodać do tego countApplications(_database.offer_id)
         phoneNumberLabel = new JLabel("Numer telefonu:");
         titleLabel = new JLabel("Tytuł oferty:");
@@ -82,7 +87,7 @@ public class OfferPanel extends JPanel {
         add(fieldsPanel, BorderLayout.CENTER);
 
         backButton.addActionListener(e -> {
-            changePanel(new MainPanel(db));
+            changePanel(new MainPanel());
         });
 
         applyButton.addActionListener(e -> {
@@ -105,7 +110,7 @@ public class OfferPanel extends JPanel {
     {
         return fieldsPanel;
     }
-    public OfferPanel(Offer offer) {
+    public OfferPanel(Offer offer, Database db) {
         this(offer.id(),offer.phoneNumber(), offer.rate(),
                 offer.type(), offer.description());
     }

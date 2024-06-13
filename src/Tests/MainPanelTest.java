@@ -37,7 +37,8 @@ public class MainPanelTest {
             new Offer(2, "987654321", 200, "Type2", "Description2", "City2", "200")
         );
         when(mockDatabase.getAllOffers()).thenReturn(offers);
-        mainPanel = new MainPanel(mockDatabase);
+        mainPanel = new MainPanel();
+//        mockDatabase
     }
 
     @AfterEach

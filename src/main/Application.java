@@ -1,14 +1,16 @@
 package main;
 
+import main.Database.Database;
 import main.Panels.LoginPanel;
 import main.Panels.MainPanel;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.nio.file.Path;
 
 public class Application extends JFrame {
-
+    private static Database _db = new Database();
     public static void appMain() {
         if (instance == null) {
             new Application();
@@ -20,6 +22,8 @@ public class Application extends JFrame {
     }
 
     public static final Path assetsDir = Path.of("assets");
+
+    public static final Database getDatabase() { return  _db;}
 
     private Application() {
         instance = this;
@@ -44,10 +48,32 @@ public class Application extends JFrame {
         this.userId = newUserId;
     }
 
-    private void init() {
+    private static void addClosingEvenet(JFrame frame){
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                int result = JOptionPane.showConfirmDialog(frame,
+                        "Are you sure you want to close this window?", "Close Window?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION){
+                    _db.close();
+                    System.exit(0);
+                }
+                else {
+                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        });
+    }
 
+    private void init() {
         setTitle("DoIt");
+
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addClosingEvenet(this);
+
         setResizable(false);
         setSize(1000, 630);
         setVisible(true);

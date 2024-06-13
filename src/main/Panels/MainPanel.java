@@ -23,8 +23,8 @@ public class MainPanel extends JPanel {
     private JTable table;
     private JFrame offerDetailsFrame;
 
-    public MainPanel(Database db) {
-        _db = db;
+    public MainPanel() {
+        _db = Application.getDatabase();
         init();
     }
 
@@ -130,7 +130,7 @@ public class MainPanel extends JPanel {
             offerDetailsFrame.dispose();
         }
 
-        OfferPanel offerPanel = new OfferPanel(offer);
+        OfferPanel offerPanel = new OfferPanel(offer, _db);
         offerDetailsFrame = new JFrame("Offer Details");
         offerDetailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         offerDetailsFrame.getContentPane().add(offerPanel);

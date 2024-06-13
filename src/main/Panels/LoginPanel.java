@@ -12,10 +12,11 @@ public class LoginPanel extends JPanel {
     private JLabel loginLabel, passwordLabel;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private Database _database;
+    private static Database _database;
     private JButton loginButton, goToRegistration;
 
     public LoginPanel() {
+        _database = Application.getDatabase();
         initializeComponents();
         addComponentsToPanel();
         setBackground(new Color(255, 240, 206, 255));
@@ -74,7 +75,7 @@ public class LoginPanel extends JPanel {
         goToRegistration = new JButton("Rejestracja");
         usernameField.setDocument(new JTextFieldLimit(42));
         passwordField.setDocument(new JTextFieldLimit(32));
-        _database = new Database();
+//        _database = new Database();
     }
 
     private void addComponentsToPanel() {
