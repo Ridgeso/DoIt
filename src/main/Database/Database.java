@@ -138,7 +138,7 @@ public class Database implements AutoCloseable {
     {
         Vector<Offer> data = new Vector<>();
         ResultSet myRs = null;
-        String updateString = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
+        String updateString = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id_user where users.id = ?";
         Offer offer = null;
 
         try (PreparedStatement Ps = conn.prepareStatement(updateString, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {

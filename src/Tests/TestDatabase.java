@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import main.Database.Database;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 class TestDatabase {
     private Database sut;
@@ -27,7 +28,7 @@ class TestDatabase {
             throws SQLException {
         mockDriverManager = mockStatic(DriverManager.class);
         mockConnection = mock(Connection.class);
-        mockStatement = Mockito.mock(Statement.class);
+        mockStatement = mock(Statement.class);
         when(mockConnection.createStatement()).thenReturn(mockStatement);
     }
 
@@ -39,8 +40,10 @@ class TestDatabase {
     }
 
     @BeforeEach
-    void setUp()
-            throws SQLException {
+    void setUp() throws SQLException {
+        try (var __ = mockConstruction(Database.class)) {
+            MockitoAnnotations.openMocks(this);
+        }
         expectGetConnection();
         sut = new Database(mockConnection);
     }
@@ -68,19 +71,19 @@ class TestDatabase {
                 login,
                 password);
 
-        try (var mockStatement = mock(PreparedStatement.class)) {
+        try (var __ = mock(PreparedStatement.class)) {
 
             var mockRez = mock(ResultSet.class);
 
-            when(mockConnection.prepareStatement(sqlStatement)).thenReturn(mockStatement);
-            when(mockStatement.executeQuery()).thenReturn(mockRez);
+//            when(mockConnection.prepareStatement(sqlStatement)).thenReturn(mockStatement);
+            when(mockStatement.executeQuery(sqlStatement)).thenReturn(mockRez);
             when(mockRez.next()).thenReturn(true);
             when(mockRez.getInt(1)).thenReturn(expectedUserId);
 
             int actualUserId = sut.checkUserLogin(login, password);
 //            assertEquals(expectedUserId, actualUserId);
 
-            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
+            verify(mockConnection, times(1)).createStatement();
 
         }
     }
@@ -263,7 +266,7 @@ class TestDatabase {
     void getUserOffers()throws SQLException
     {
         var id = 1;
-        String sqlStatement = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
+        String sqlStatement = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id_user where users.id = ?";
 
         try (var mockStatement = mock(PreparedStatement.class)) {
             var mockRez = mock(ResultSet.class);

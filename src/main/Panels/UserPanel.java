@@ -117,6 +117,7 @@ public class UserPanel extends JPanel {
         header.add("cena");
         header.add("opis");
         header.add("Aplikujący");
+        header.add("Platnosc");
 
         Vector<Vector<Object>> data = new Vector<>();
         for (Offer offer : offers) {
@@ -126,6 +127,7 @@ public class UserPanel extends JPanel {
             rowData.add(offer.price());
             rowData.add(offer.description());
             rowData.add(offer);
+            rowData.add(offer);
             data.add(rowData);
         }
 
@@ -134,11 +136,12 @@ public class UserPanel extends JPanel {
         table = new JTable(model) {
             @Override
             public Class<?> getColumnClass(int column) {
-                return column == 4 ? Offer.class : Object.class;
+                return column == 4 || column == 5 ? Offer.class : Object.class;
             }
         };
         table.getColumnModel().getColumn(3).setPreferredWidth(200);
-        table.getColumnModel().getColumn(4).setCellRenderer(new UserPanel.ButtonRenderer());
+        table.getColumnModel().getColumn(4).setCellRenderer(new UserPanel.ButtonRenderer("Dane"));
+        table.getColumnModel().getColumn(5).setCellRenderer(new UserPanel.ButtonRenderer("Oplac"));
         table.addMouseListener(new UserPanel.ButtonMouseListener(table));
 
         JScrollPane pane = new JScrollPane(table);
@@ -225,15 +228,16 @@ public class UserPanel extends JPanel {
         }
     }
     public class ButtonRenderer extends JButton implements TableCellRenderer {
-
-        public ButtonRenderer() {
+        private String text;
+        public ButtonRenderer(String text) {
             setOpaque(true);
+            this.text = text;
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
-            setText("Dane");
+            setText(text);
             return this;
         }
     }
@@ -249,11 +253,19 @@ public class UserPanel extends JPanel {
             int column = table.getColumnModel().getColumnIndexAtX(e.getX());
             int row = e.getY() / table.getRowHeight();
             System.out.println(column);
-            if (row < table.getRowCount() && row >= 0 && column == 4) {
+            if (row < 0 || table.getRowCount() <= row) {
+                return;
+            }
+            if (column == 4) {
                 Offer offer = (Offer) table.getValueAt(row, column);
                 if (offer != null) {
                     showApplicantDetails(offer.id());
                 }
+            }
+            else if (column == 5) {
+                JOptionPane.showMessageDialog(
+                    UserPanel.this,
+                    "Przekierowywanie do systemu płatności", "Płatność", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

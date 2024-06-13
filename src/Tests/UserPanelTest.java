@@ -29,10 +29,13 @@ public class UserPanelTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        try (var __ = mockConstruction(Database.class)) {
+            MockitoAnnotations.openMocks(this);
+        }
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
         when(Application.getInstance().getUserId()).thenReturn(1);
+        when(Application.getDatabase()).thenReturn(mockDatabase);
 
         ArrayList<String> data = new ArrayList<>();
         data.add("Jan");
@@ -78,7 +81,7 @@ public class UserPanelTest {
         JTable table = (JTable) scrollPane.getViewport().getView();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         assertEquals(1, model.getRowCount());
-        assertEquals(5, model.getColumnCount());
+        assertEquals(6, model.getColumnCount());
     }
 
     @Test
@@ -107,7 +110,9 @@ public class UserPanelTest {
     @Test
     public void test_showMainPanel() {
         JButton application_see = (JButton) userPanel.getInnerPanel().getComponent(8);
-        application_see.doClick();
+        try (var __ = mockConstruction(MainPanel.class)) {
+            application_see.doClick();
+        }
         verify(mockApplication, times(1)).setPanel(any(MainPanel.class));
     }
 }

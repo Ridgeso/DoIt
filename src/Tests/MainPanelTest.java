@@ -1,3 +1,5 @@
+package Tests;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +31,9 @@ public class MainPanelTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        try (var __ = mockConstruction(Database.class)) {
+            MockitoAnnotations.openMocks(this);
+        }
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
         java.util.List<Offer> offers = Arrays.asList(
@@ -37,6 +41,7 @@ public class MainPanelTest {
             new Offer(2, "987654321", 200, "Type2", "Description2", "City2", "200")
         );
         when(mockDatabase.getAllOffers()).thenReturn(offers);
+        when(Application.getDatabase()).thenReturn(mockDatabase);
         mainPanel = new MainPanel();
 //        mockDatabase
     }

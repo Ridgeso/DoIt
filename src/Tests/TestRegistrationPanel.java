@@ -3,6 +3,7 @@ package Tests;
 import main.Application;
 import main.Database.Database;
 import main.Panels.RegistrationPanel;
+import main.Panels.UserPanel;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,9 +34,12 @@ public class TestRegistrationPanel {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        try (var __ = mockConstruction(Database.class)) {
+            MockitoAnnotations.openMocks(this);
+        }
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
+        when(Application.getDatabase()).thenReturn(mockDatabase);
 
         sut = new RegistrationPanel();
     }
@@ -76,7 +80,9 @@ public class TestRegistrationPanel {
         clickOnRegisterButtonWithOneMoreField(7, "pass");
         clickOnRegisterButtonWithOneMoreField(9, "fname");
         clickOnRegisterButtonWithOneMoreField(11, "lname");
-        clickOnRegisterButtonWithOneMoreField(13, "555555555");
+        try (var __ = mockConstruction(UserPanel.class)) {
+            clickOnRegisterButtonWithOneMoreField(13, "555555555");
+        }
 
         jOptionPane.verify(
             () -> JOptionPane.showMessageDialog(any(), anyString(), anyString(), eq(JOptionPane.ERROR_MESSAGE)),
