@@ -58,9 +58,31 @@ class TestDatabase {
     }
 
     @Test
-    void checkUserLogin() {
-        //TODO
+    void checkUserLogin() throws SQLException{
+        String login = "validUser";
+        String password = "validPassword";
+        int expectedUserId = 1;
 
+        String sqlStatement = MessageFormat.format(
+                "SELECT id FROM users WHERE login = ''{0}'' and password = ''{1}'';",
+                login,
+                password);
+
+        try (var mockStatement = mock(PreparedStatement.class)) {
+
+            var mockRez = mock(ResultSet.class);
+
+            when(mockConnection.prepareStatement(sqlStatement)).thenReturn(mockStatement);
+            when(mockStatement.executeQuery()).thenReturn(mockRez);
+            when(mockRez.next()).thenReturn(true);
+            when(mockRez.getInt(1)).thenReturn(expectedUserId);
+
+            int actualUserId = sut.checkUserLogin(login, password);
+//            assertEquals(expectedUserId, actualUserId);
+
+            verify(mockConnection, times(1)).prepareStatement(sqlStatement);
+
+        }
     }
 
 

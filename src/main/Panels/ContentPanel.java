@@ -1,5 +1,6 @@
 package main.Panels;
 
+import main.Application;
 import main.Database.Database;
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,9 @@ public class ContentPanel extends JPanel {
     private JButton viewButton;
     private GridBagConstraints constraints = new GridBagConstraints();
     private int id;
-    public Database database = new Database();
+//    public Database database = new Database();
+    public Database database = Application.getDatabase();
+
     public ContentPanel(int id, String offerName, String localisation, String price) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEtchedBorder());

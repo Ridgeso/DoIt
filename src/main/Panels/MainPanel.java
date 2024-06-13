@@ -23,8 +23,8 @@ public class MainPanel extends JPanel {
     private JTable table;
     private JFrame offerDetailsFrame;
 
-    public MainPanel(Database db) {
-        _db = db;
+    public MainPanel() {
+        _db = Application.getDatabase();
         init();
     }
 
@@ -86,11 +86,11 @@ public class MainPanel extends JPanel {
     }
 
     private void showUserProfile() {
-        Application.getInstance().setPanel(new UserPanel(_db));
+        Application.getInstance().setPanel(new UserPanel());
     }
 
     private void logout() {
-        Application.getInstance().setPanel(new LoginPanel(_db));
+        Application.getInstance().setPanel(new LoginPanel());
     }
 
     public class ButtonRenderer extends JButton implements TableCellRenderer {

@@ -41,8 +41,8 @@ public class UserPanel extends JPanel {
     private ArrayList<JButton> buttons;
     private JFrame userinfo;
 
-    public UserPanel(Database setDB) {
-        db = setDB;
+    public UserPanel() {
+        db = Application.getDatabase();
         init();
     }
 
@@ -420,6 +420,6 @@ public class UserPanel extends JPanel {
     }
 
     private void showMainPanel() {
-        Application.getInstance().setPanel(new MainPanel(db));
+        Application.getInstance().setPanel(new MainPanel());
     }
 }

@@ -9,8 +9,6 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Database db = new Database();
-        Application.appMain(db);
-
+        Application.appMain();
     }
 }

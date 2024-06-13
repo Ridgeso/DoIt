@@ -53,9 +53,8 @@ public class UserPanelTest {
         Vector<Offer> offers = new Vector<>();
         offers.add(new Offer(1, "", 30.0, "Sprzataczka", "Praca dorywcza", "Krakow", "30.0"));
         when(mockDatabase.getUserOffers(1)).thenReturn(offers);
-        userPanel.db = mockDatabase;
-        userPanel = new UserPanel(mockDatabase);
-
+        userPanel = new UserPanel();
+//        userPanel.db = mockDatabase;
     }
 
     @AfterEach

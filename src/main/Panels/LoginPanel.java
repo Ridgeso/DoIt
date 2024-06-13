@@ -15,8 +15,8 @@ public class LoginPanel extends JPanel {
     private static Database _database;
     private JButton loginButton, goToRegistration;
 
-    public LoginPanel(Database db) {
-        _database = db;
+    public LoginPanel() {
+        _database = Application.getDatabase();
         initializeComponents();
         addComponentsToPanel();
         setBackground(new Color(255, 240, 206, 255));
@@ -45,7 +45,7 @@ public class LoginPanel extends JPanel {
                     "Użytkownik poprawnie zalogowany",
                     "Informacja",
                     JOptionPane.INFORMATION_MESSAGE);
-                changePanel(new UserPanel(_database));
+                changePanel(new UserPanel());
             }
             catch (SQLException exception){
                 System.out.println(exception.getMessage());
@@ -60,7 +60,7 @@ public class LoginPanel extends JPanel {
             passwordField.setText("");
         });
         goToRegistration.addActionListener(e -> {
-            changePanel(new RegistrationPanel(db));
+            changePanel(new RegistrationPanel());
         });
     }
 
@@ -130,7 +130,7 @@ public class LoginPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        frame.add(new LoginPanel(_database));
+        frame.add(new LoginPanel());
         frame.revalidate();
         frame.repaint();
     }

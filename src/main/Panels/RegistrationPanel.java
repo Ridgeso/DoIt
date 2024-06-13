@@ -16,8 +16,8 @@ public class RegistrationPanel extends JPanel {
     private JButton registerButton;
     private Database _database;
 
-    public RegistrationPanel(Database setDb) {
-        initializeComponents(setDb);
+    public RegistrationPanel() {
+        initializeComponents();
         addComponentsToPanel();
         registerButton.addActionListener(e -> {
             User newUser = new User(
@@ -38,11 +38,11 @@ public class RegistrationPanel extends JPanel {
                 Application.getInstance().setUserId(_database.checkIfUserExist(newUser.firstName(), newUser.lastName()));
             } catch (SQLException er) {}
 
-            Application.getInstance().setPanel(new UserPanel(_database));
+            Application.getInstance().setPanel(new UserPanel());
         });
     }
 
-    private void initializeComponents(Database db) {
+    private void initializeComponents() {
         loginField = new JTextField(20);
         emailField = new JTextField(20);
         firstNameField = new JTextField(20);
@@ -52,7 +52,7 @@ public class RegistrationPanel extends JPanel {
         confirmPasswordField = new JPasswordField(20);
         agreeCheckBox = new JCheckBox("Zgoda na RODO");
         registerButton = new JButton("Zarejestruj");
-        _database = db;
+        _database = Application.getDatabase();
         agreeCheckBox.setOpaque(false);
         loginField.setDocument(new JTextFieldLimit(42));
         emailField.setDocument(new JTextFieldLimit(42));
@@ -95,8 +95,8 @@ public class RegistrationPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        Database db= new  Database();
-        frame.add(new RegistrationPanel(db));
+        Database db= Application.getDatabase();
+        frame.add(new RegistrationPanel());
         frame.revalidate();
         frame.repaint();
     }

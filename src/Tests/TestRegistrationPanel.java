@@ -37,7 +37,7 @@ public class TestRegistrationPanel {
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
 
-        sut = new RegistrationPanel(mockDatabase);
+        sut = new RegistrationPanel();
     }
 
     @AfterEach

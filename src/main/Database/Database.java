@@ -66,9 +66,6 @@ public class Database implements AutoCloseable {
     }
 
     public void addNewUser(String firstName, String lastName, String email, String login, String password, String phoneNumber){
-
-//        if(!use_test)
-//            connect();
         Statement stmt = null;
 
         try {
@@ -81,13 +78,9 @@ public class Database implements AutoCloseable {
         catch (SQLException e){
             System.out.println(e.getMessage());
         }
-//        if(!use_test)
-//            closeConnection();
     }
 
     public int checkIfUserExist(String userFName, String userLName) throws SQLException {
-//        if(!use_test)
-//            connect();
         Statement stmt = conn.createStatement();
         String userSelect = MessageFormat.format(
             "SELECT id FROM users WHERE first_name = ''{0}'' and last_name = ''{1}'';",
@@ -95,14 +88,10 @@ public class Database implements AutoCloseable {
             userLName);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
         int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
-//        if(!use_test)
-//            closeConnection();
         return user_id;
     }
 
     public int checkUserLogin(String login, String password) throws SQLException {
-//        if(!use_test)
-//            connect();
         Statement stmt = conn.createStatement();
         String userSelect = MessageFormat.format(
             "SELECT id FROM users WHERE login = ''{0}'' and password = ''{1}'';",
@@ -110,15 +99,11 @@ public class Database implements AutoCloseable {
             password);
         ResultSet checkExistID = stmt.executeQuery(userSelect);
         int user_id = checkExistID.next() ? checkExistID.getInt(1) : Application.INVALID_USER_ID;
-//        if(!use_test)
-//            closeConnection();
         return user_id;
     }
 
     public ArrayList<String> getUserData(int id)
     {
-//        if(!use_test)
-//            connect();
         ArrayList<String> data = new ArrayList<>();
         ResultSet myRs = null;
         String userSelect = "SELECT first_name,last_name,email,phone_number FROM users WHERE users.id =?;";
@@ -146,15 +131,11 @@ public class Database implements AutoCloseable {
             System.out.println("Null pointer caught");
         }
 
-//        if(!use_test)
-//            closeConnection();
         return data;
     }
 
     public Vector<Offer> getUserOffers(int id)
     {
-//        if(!use_test)
-//            connect();
         Vector<Offer> data = new Vector<>();
         ResultSet myRs = null;
         String updateString = "SELECT offers.id as id,type,city,price,description from offers join users on users.id=offers.id where users.id = ?";
@@ -180,15 +161,10 @@ public class Database implements AutoCloseable {
         catch (SQLException e){
             System.out.println("getUserOffers: " + e.getMessage());
         }
-
-//        if(!use_test)
-//            closeConnection();
         return data;
     }
 
     public Vector<Vector<String>> getUserApplications(int id){
-//        if(!use_test)
-//            connect();
         Vector<Vector<String>> data = new Vector<>();
         String updateString = "SELECT offer_id,type,city,price from (applicants join users on users.id=applicants.user_id) join offers on applicants.offer_id = offers.id where users.id = ?";
         ResultSet myRs = null;
@@ -212,14 +188,10 @@ public class Database implements AutoCloseable {
         catch (SQLException e){
             System.out.println("getUserApplications: " + e.getMessage());
         }
-//        if(!use_test)
-//            closeConnection();
         return data;
 
     }
     public Vector<User> getApplicantsData(int id){
-
-        connect();
         Vector<User> data = new Vector<>();
         String updateString = "SELECT first_name,last_name,email,phone_number from (applicants join users on users.id=applicants.user_id)" +
                 " join offers on applicants.offer_id = offers.id where offers.id = ?";
@@ -244,13 +216,10 @@ public class Database implements AutoCloseable {
         catch (SQLException e){
             System.out.println("getUserApplications: " + e.getMessage());
         }
-//        closeConnection();
         return data;
 
     }
     public User getAnnoucerData(int id){
-
-        connect();
         Vector<User> data = new Vector<>();
         String updateString = " SELECT first_name,last_name,email,phone_number from" +
                 " Users join offers on Users.id = offers.id_user where offers.id = ?";
@@ -274,14 +243,11 @@ public class Database implements AutoCloseable {
         catch (SQLException e){
             System.out.println("getUserApplications: " + e.getMessage());
         }
-//        closeConnection();
         return user;
 
     }
     public void addNewOfferWhenUserExists(Integer user_id, String city, String type, float price, String description)throws SQLException
     {
-//        if(!use_test)
-//            connect();
         Statement stmt = conn.createStatement();
         if (user_id == -1){
             System.out.println("User doesn't exist");
@@ -291,14 +257,9 @@ public class Database implements AutoCloseable {
                 type + "\', \'" + city + "\', " + price + ", \'" + description + "\');";
         stmt.executeUpdate(insert);
         System.out.println("Urzytkownik dodany");
-
-//        if(!use_test)
-//            closeConnection();
     }
 
     public Offer getOfferById(String id) {
-//        if(!use_test)
-//            connect();
         Offer offer = null;
         String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user WHERE Offers.id = ?";
         try (PreparedStatement Ps = conn.prepareStatement(updateString)) {
@@ -319,16 +280,11 @@ public class Database implements AutoCloseable {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-//        if(!use_test)
-//            closeConnection();
         return offer;
     }
     
     
     public List<Offer> getAllOffers() {
-//        if(!use_test)
-//            connect();
         List<Offer> offers = new ArrayList<>();
         String queryString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user";
         try (PreparedStatement ps = conn.prepareStatement(queryString);
@@ -350,8 +306,6 @@ public class Database implements AutoCloseable {
             System.out.println(e.getMessage());
         }
 
-//        if(!use_test)
-//            closeConnection();
         return offers;
     }
     public void assignUserToOffer(int offerId, int userId) {
@@ -369,25 +323,18 @@ public class Database implements AutoCloseable {
             stmt.executeUpdate(queryString);
             System.out.println("Pomyślnie zaaplikowano");
         }catch (Exception e){}
-//        if(!use_test)
-//            closeConnection();
     }
     public int countApplications(int offer_id){
-//        if(!use_test)
-//            connect();
         String queryString = "SELECT COUNT(*) FROM applicants WHERE offer_id=" + offer_id;
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {
             try (ResultSet myRs = ps.executeQuery()) {
                 if (myRs.next()) {
-//                    closeConnection();
                     return myRs.getInt(1);
                 }
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-//        if(!use_test)
-//            closeConnection();
         return 0;
 
     }
