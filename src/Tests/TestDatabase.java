@@ -49,6 +49,7 @@ class TestDatabase {
     }
 
 
+
     @AfterEach
     void finish() {
         //verifyGetConnection();
@@ -111,6 +112,24 @@ class TestDatabase {
             verify(mockStatement, times(1)).executeUpdate(anyString());
         }
     }
+
+    @Test
+    void deleteOffer()
+            throws SQLException
+    {
+
+
+        try (var mockStatement = mock(Statement.class))
+        {
+            when(mockConnection.createStatement()).thenReturn(mockStatement);
+            when(mockStatement.executeUpdate(anyString())).thenReturn(0);
+
+            sut.deleteOffer(1);
+
+            verify(mockConnection, times(2)).createStatement();
+            verify(mockStatement, times(2)).executeUpdate(anyString());
+        }
+    }
         @Test
     public void getAllOffers()throws SQLException
     {
@@ -164,10 +183,6 @@ class TestDatabase {
             ArrayList<String> userData = sut.getUserData(id);
             assertEquals(0, userData.size());
 
-//            assertEquals("AName", userData.get(0));
-//            assertEquals("BName", userData.get(1));
-//            assertEquals("email", userData.get(2));
-//            assertEquals("phonenumber", userData.get(3));
             verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
         }
@@ -192,11 +207,6 @@ class TestDatabase {
 
             Vector<Vector<String>> userData = sut.getUserApplications(id);
             assertEquals(0, userData.size());
-
-//            assertEquals("A", userData.get(0).get(0));
-//            assertEquals("Cracow", userData.get(0).get(1));
-//            assertEquals("a@student.agh.edu.pl", userData.get(0).get(2));
-//            assertEquals("722-050-011", userData.get(0).get(3));
 
             verify(mockConnection, times(1)).prepareStatement(sqlStatement,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         }

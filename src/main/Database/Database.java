@@ -324,6 +324,30 @@ public class Database implements AutoCloseable {
             System.out.println("Pomyślnie zaaplikowano");
         }catch (Exception e){}
     }
+    public void deleteOffer(int id)
+    {
+
+
+        String delete = "DELETE FROM applicants where offer_id = "+id;
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(delete);
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        delete = "DELETE FROM offers where id = "+id;
+
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(delete);
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Usunięto");
+    }
     public int countApplications(int offer_id){
         String queryString = "SELECT COUNT(*) FROM applicants WHERE offer_id=" + offer_id;
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {

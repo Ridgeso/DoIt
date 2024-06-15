@@ -30,24 +30,22 @@ public class UserPanel extends JPanel {
     private JLabel label;
     private Vector<String> header;
     private GridBagConstraints constraints;
-    private JButton buttonAdd;
-    private JButton buttonAddOffer;
-    private JButton showMainPanelButton;
+    private JButton buttonAdd, buttonAddOffer, showMainPanelButton, show_applications;
     private JPanel innerPanel;
-    private JButton show_applications;
     private Boolean show_application;
     private LinkedList<ContentPanel> contentPanels;
     private JTable table;
     private ArrayList<JButton> buttons;
     private JFrame userinfo;
+    private int offeradd_position, offers_position, application_position;
+    private JScrollPane pane;
 
     public UserPanel() {
         db = Application.getDatabase();
         init();
     }
 
-    public void initComponents()
-    {
+    public void initComponents() {
         final var iconPath = Path.of(Application.assetsDir.toString(), "user.jpg");
         image = new ImageIcon(iconPath.toString());
         label = new JLabel(image);
@@ -56,18 +54,18 @@ public class UserPanel extends JPanel {
         contentPanels = new LinkedList<>();
         buttonAdd = new JButton("Dodaj nowe ogłoszenie");
         show_applications = new JButton("Zobacz Twoje aplikacje");
+        buttonAddOffer = new JButton("Dodaj");
         buttons = new ArrayList<>();
 
         data = db.getUserData(Application.getInstance().getUserId());
         applications = db.getUserApplications(Application.getInstance().getUserId());
-        offers = db.getUserOffers(Application.getInstance().getUserId());
         label.setBorder(BorderFactory.createBevelBorder(1));
-        show_application=Boolean.FALSE;
+        show_application = Boolean.FALSE;
 
 
         for (int j = 0; j < applications.size(); j++) {
             ++constraints.gridy;
-            ContentPanel empty = new ContentPanel(Integer.parseInt(applications.get(j).get(0)),  applications.get(j).get(1),
+            ContentPanel empty = new ContentPanel(Integer.parseInt(applications.get(j).get(0)), applications.get(j).get(1),
                     applications.get(j).get(2), applications.get(j).get(3));
             contentPanels.add(empty);
             final int id = j;
@@ -77,9 +75,61 @@ public class UserPanel extends JPanel {
         }
 
     }
+
     public JPanel getInnerPanel() {
         return innerPanel;
     }
+
+    private void show_offers() {
+        offers = db.getUserOffers(Application.getInstance().getUserId());
+        constraints.gridx = 0;
+        constraints.gridy = offers_position;
+
+        if (pane != null)
+            innerPanel.remove(pane);
+
+        Vector<Vector<Object>> data = new Vector<>();
+        for (Offer offer : offers) {
+            Vector<Object> rowData = new Vector<>();
+            rowData.add(offer.type());
+            rowData.add(offer.city());
+            rowData.add(offer.price());
+            rowData.add(offer.description());
+            rowData.add(offer);
+            rowData.add(offer);
+            rowData.add(offer);
+            data.add(rowData);
+        }
+        DefaultTableModel model = new DefaultTableModel(data, header);
+
+        table = new JTable(model) {
+            @Override
+            public Class<?> getColumnClass(int column) {
+                return (column == 4 | column == 5 || column == 6) ? Offer.class : Object.class;
+            }
+        };
+
+        table.getColumnModel().getColumn(3).setPreferredWidth(200);
+        table.getColumnModel().getColumn(4).setCellRenderer(new UserPanel.ButtonRenderer("Dane"));
+        table.getColumnModel().getColumn(5).setCellRenderer(new UserPanel.ButtonRenderer("Opłać"));
+        table.getColumnModel().getColumn(6).setCellRenderer(new UserPanel.ButtonRenderer("Usuń"));
+        table.addMouseListener(new UserPanel.ButtonMouseListener(table));
+
+        pane = new JScrollPane(table);
+        pane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Zamieszczone ogłoszenia",
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        pane.setPreferredSize(new Dimension(600, 200));
+
+        ++constraints.gridy;
+        constraints.insets = new Insets(5, 5, 5, 5);
+        innerPanel.add(pane, constraints);
+        innerPanel.revalidate();
+        innerPanel.repaint();
+
+    }
+
     public void init() {
 
         initComponents();
@@ -118,46 +168,13 @@ public class UserPanel extends JPanel {
         header.add("opis");
         header.add("Aplikujący");
         header.add("Platnosc");
+        header.add("Usuń");
 
-        Vector<Vector<Object>> data = new Vector<>();
-        for (Offer offer : offers) {
-            Vector<Object> rowData = new Vector<>();
-            rowData.add(offer.type());
-            rowData.add(offer.city());
-            rowData.add(offer.price());
-            rowData.add(offer.description());
-            rowData.add(offer);
-            rowData.add(offer);
-            data.add(rowData);
-        }
-
-        DefaultTableModel model = new DefaultTableModel(data, header);
-
-        table = new JTable(model) {
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return column == 4 || column == 5 ? Offer.class : Object.class;
-            }
-        };
-        table.getColumnModel().getColumn(3).setPreferredWidth(200);
-        table.getColumnModel().getColumn(4).setCellRenderer(new UserPanel.ButtonRenderer("Dane"));
-        table.getColumnModel().getColumn(5).setCellRenderer(new UserPanel.ButtonRenderer("Oplac"));
-        table.addMouseListener(new UserPanel.ButtonMouseListener(table));
-
-        JScrollPane pane = new JScrollPane(table);
-        pane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "Zamieszczone ogłoszenia",
-                TitledBorder.CENTER,
-                TitledBorder.TOP));
-        pane.setPreferredSize(new Dimension(600, 200));
-
+        offers_position = constraints.gridy;
+        show_offers();
         ++constraints.gridy;
-        constraints.insets = new Insets(5, 5, 5, 5);
-        innerPanel.add(pane, constraints);
-        ++constraints.gridy;
+        offeradd_position = constraints.gridy;
 
-        buttonAdd = new JButton("Dodaj nowe ogłoszenie");
-        buttonAdd.setName("offer");
         ++constraints.gridy;
         buttonAdd.addActionListener(e -> showOfferForm());
         innerPanel.add(buttonAdd, constraints);
@@ -170,26 +187,33 @@ public class UserPanel extends JPanel {
         ++constraints.gridy;
 
         innerPanel.add(show_applications, constraints);
+        application_position = constraints.gridy + 1;
         innerPanel.setBackground(new Color(255, 240, 206, 255));
         innerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Panel użytkownika",
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
 
-        JScrollPane scrollPane = new JScrollPane(innerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scrollPane = new JScrollPane(innerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         setVisible(true);
     }
+
     public class UsersinfoPanel extends JPanel{
 
         private ArrayList<String> data;
         private  JPanel innerPanel;
+        private GridBagConstraints constraints;
+
         public UsersinfoPanel(Vector<User> users) {
 
-            innerPanel = new JPanel(new GridBagLayout());
-            innerPanel.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            constraints = new GridBagConstraints();
+            innerPanel = new JPanel();
+            innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
+
             for(int j=0;j< users.size();j++) {
+
                 JPanel fieldsPanel = new JPanel();
                 fieldsPanel.setLayout(new GridBagLayout());
                 data = new ArrayList<>();
@@ -218,17 +242,21 @@ public class UserPanel extends JPanel {
                 innerPanel.add(fieldsPanel);
             }
 
-            setBorder(new EmptyBorder(10, 10, 10, 10)); // Marginesy dla panelu
+            if (users.isEmpty())
+                innerPanel.add(new JLabel("Brak aplikujących"));
+
+            setBorder(new EmptyBorder(10, 10, 10, 10));
             setBounds(0, 0, 1000, 630);
             JScrollPane scrollPane = new JScrollPane(innerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             setLayout(new BorderLayout());
             add(scrollPane, BorderLayout.CENTER);
             setVisible(true);
-            //setVisible(true);
         }
     }
+
     public class ButtonRenderer extends JButton implements TableCellRenderer {
         private String text;
+
         public ButtonRenderer(String text) {
             setOpaque(true);
             this.text = text;
@@ -242,7 +270,7 @@ public class UserPanel extends JPanel {
         }
     }
 
-    private class ButtonMouseListener extends MouseAdapter {
+    public class ButtonMouseListener extends MouseAdapter {
         private final JTable table;
 
         public ButtonMouseListener(JTable table) {
@@ -252,7 +280,6 @@ public class UserPanel extends JPanel {
         public void mouseClicked(MouseEvent e) {
             int column = table.getColumnModel().getColumnIndexAtX(e.getX());
             int row = e.getY() / table.getRowHeight();
-            System.out.println(column);
             if (row < 0 || table.getRowCount() <= row) {
                 return;
             }
@@ -261,23 +288,48 @@ public class UserPanel extends JPanel {
                 if (offer != null) {
                     showApplicantDetails(offer.id());
                 }
-            }
-            else if (column == 5) {
+            } else if (column == 5) {
                 JOptionPane.showMessageDialog(
-                    UserPanel.this,
-                    "Przekierowywanie do systemu płatności", "Płatność", JOptionPane.INFORMATION_MESSAGE);
+                        UserPanel.this,
+                        "Przekierowywanie do systemu płatności", "Płatność", JOptionPane.INFORMATION_MESSAGE);
+            } else if (column == 6) {
+                Offer offer = (Offer) table.getValueAt(row, column);
+                if (offer != null) {
+                    db.deleteOffer(offer.id());
+                    offers.clear();
+                    show_offers();
+
+                }
             }
         }
     }
-    private void showApplicantDetails(int id_offer)
-    {
-        Vector<User> applicants = db.getApplicantsData(id_offer);
-        if (userinfo != null) {
-            userinfo .dispose();
+
+        private void showApplicantDetails(int id_offer) {
+            Vector<User> applicants = db.getApplicantsData(id_offer);
+            if (userinfo != null) {
+                userinfo.dispose();
+            }
+
+                UsersinfoPanel userinfoPanel = new UsersinfoPanel(applicants);
+                userinfo = new JFrame("Dane");
+                userinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                userinfo.getContentPane().add(userinfoPanel);
+                userinfo.pack();
+                userinfo.setLocationRelativeTo(null);
+                userinfo.setVisible(true);
+
+
         }
-        if(!applicants.isEmpty()) {
-            UsersinfoPanel userinfoPanel = new UsersinfoPanel(applicants);
-            userinfo = new JFrame("Dane");
+
+        private void showAnnoucerDetails(int id_offer) {
+            User annoucer = db.getAnnoucerData(id_offer);
+            if (userinfo != null) {
+                userinfo.dispose();
+            }
+            Vector<User> annoucers = new Vector<>();
+            annoucers.add(annoucer);
+            UsersinfoPanel userinfoPanel = new UsersinfoPanel(annoucers);
+            userinfo = new JFrame("Dane ");
             userinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             userinfo.getContentPane().add(userinfoPanel);
             userinfo.pack();
@@ -285,35 +337,17 @@ public class UserPanel extends JPanel {
             userinfo.setVisible(true);
         }
 
-    }
-    private void showAnnoucerDetails(int id_offer)
-    {
-        User annoucer = db.getAnnoucerData(id_offer);
-        if (userinfo != null) {
-            userinfo .dispose();
+
+        private void logout() {
+            Application.getInstance().logout();
         }
-        Vector<User> annoucers = new Vector<>();
-        annoucers.add(annoucer);
-        UsersinfoPanel userinfoPanel = new UsersinfoPanel(annoucers);
-        userinfo = new JFrame("Dane ");
-        userinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        userinfo.getContentPane().add(userinfoPanel);
-        userinfo.pack();
-        userinfo.setLocationRelativeTo(null);
-        userinfo.setVisible(true);
-    }
-
-
-    private void logout() {
-        Application.getInstance().logout();
-    }
 
     private void show_applications()
     {
         if(show_application)
             return;
         show_application = Boolean.TRUE;
-
+        constraints.gridy =  application_position;
 
         for (int j = 0; j < applications.size(); j++) {
 
@@ -323,43 +357,46 @@ public class UserPanel extends JPanel {
             innerPanel.add(buttons.get(j), constraints);
 
         }
-
         innerPanel.revalidate();
-        innerPanel.repaint();
     }
+
 
 
     private void AddOffer(String city, String type, float price, String description) {
 
         innerPanel.remove(offerAddPanel);
         innerPanel.remove(buttonAddOffer);
-        innerPanel.revalidate();
-        innerPanel.repaint();
+        boolean success = true;
 
-        JLabel infoLabel = new JLabel("Dodano ofertę", SwingConstants.CENTER);
-        infoLabel.setText("Dodano ofertę");
-
+        constraints.gridy = offeradd_position;
         try {
             db.addNewOfferWhenUserExists(Application.getInstance().getUserId(), city, type, price, description);
         } catch (SQLException exception) {
-            infoLabel.setText("Błąd");
+            System.out.println(exception.getMessage());
+            JOptionPane.showMessageDialog(
+                    UserPanel.this,
+                    "Błąd przy dodawaniu oferty",
+                    "Błąd",
+                    JOptionPane.ERROR_MESSAGE);
+            success = false;
         }
+        if (success) {
+            JOptionPane.showMessageDialog(
+                    UserPanel.this,
+                    "Dodano ofertę",
+                    "Informacja",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+
         ++constraints.gridy;
-        innerPanel.add(infoLabel, constraints);
-
-        Timer timer = new Timer(4000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                infoLabel.setText("");
-                innerPanel.add(buttonAdd, constraints);
-                ((Timer) e.getSource()).stop();
-            }
-        });
-        timer.setRepeats(false);
-        timer.start();
-
+        innerPanel.revalidate();
+        innerPanel.add(buttonAdd, constraints);
         ++constraints.gridy;
         innerPanel.add(showMainPanelButton,constraints);
+        ++constraints.gridy;
+        innerPanel.add(show_applications,constraints);
+        offers.clear();
+        show_offers();
 
     }
 
@@ -368,7 +405,7 @@ public class UserPanel extends JPanel {
         innerPanel.remove(buttonAdd);
         innerPanel.remove(showMainPanelButton);
         innerPanel.remove(show_applications);
-        innerPanel.revalidate();
+
         offerAddPanel = new JPanel();
         offerAddPanel.setVisible(false);
         offerAddPanel.setLayout(new GridLayout(4, 2));
@@ -384,14 +421,18 @@ public class UserPanel extends JPanel {
         JTextField textPrize = new JTextField(8);
         JTextField textDescription = new JTextField(300);
 
-        buttonAddOffer = new JButton("Dodaj");
         buttonAddOffer.addActionListener(e ->
         {
             try {
                 AddOffer(textType.getText(),
                         textCity.getText(), Float.parseFloat(textPrize.getText()), textDescription.getText());
             } catch (NumberFormatException exception) {
-                System.out.println("Złe parametry");
+                System.out.println(exception.getMessage());
+                JOptionPane.showMessageDialog(
+                        UserPanel.this,
+                        "Złe parametry ogłoszenia",
+                        "Błąd",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
         });
@@ -420,6 +461,8 @@ public class UserPanel extends JPanel {
         }
         show_application = false;
 
+        int tmp = constraints.gridy;
+        constraints.gridy = offeradd_position;
         innerPanel.add(offerAddPanel, constraints);
         offerAddPanel.setVisible(true);
         ++constraints.gridy;
@@ -428,10 +471,12 @@ public class UserPanel extends JPanel {
         innerPanel.add(showMainPanelButton, constraints);
         ++constraints.gridy;
         innerPanel.add(show_applications, constraints);
-
+        constraints.gridy = tmp;
+        innerPanel.revalidate();
     }
 
-    private void showMainPanel() {
-        Application.getInstance().setPanel(new MainPanel());
+        private void showMainPanel() {
+            Application.getInstance().setPanel(new MainPanel());
+        }
     }
-}
+
