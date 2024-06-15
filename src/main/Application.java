@@ -25,7 +25,7 @@ public class Application extends JFrame {
 
     public static final Database getDatabase() { return  _db;}
 
-    private Application() {
+    public Application() {
         instance = this;
         init();
         setPanel(new LoginPanel());
@@ -48,7 +48,7 @@ public class Application extends JFrame {
         this.userId = newUserId;
     }
 
-    private static void addClosingEvenet(JFrame frame){
+    public static void addClosingEvenet(JFrame frame){
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -67,7 +67,7 @@ public class Application extends JFrame {
         });
     }
 
-    private void init() {
+    public void init() {
         setTitle("DoIt");
 
 
@@ -85,7 +85,7 @@ public class Application extends JFrame {
         setIconImage(iconImage.getImage());
     }
 
-    private static Application instance = null;
+    public static Application instance = null;
     public static final int INVALID_USER_ID = -1;
     private int userId = INVALID_USER_ID;
 }
