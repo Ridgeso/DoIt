@@ -35,7 +35,7 @@ public class Database implements AutoCloseable {
     public void connect() {
 
         Properties prop = new Properties();
-        try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env"))
+        try (FileInputStream input = new FileInputStream("dbCredentials.env"))
         {
             prop.load(input);
             Class.forName("org.postgresql.Driver");
