@@ -12,11 +12,9 @@ public class LoginPanel extends JPanel {
     private JLabel loginLabel, passwordLabel;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private static Database _database;
     private JButton loginButton, goToRegistration;
 
     public LoginPanel() {
-        _database = Application.getDatabase();
         initializeComponents();
         addComponentsToPanel();
         setBackground(new Color(255, 240, 206, 255));
@@ -30,7 +28,7 @@ public class LoginPanel extends JPanel {
                 return;
             }
             try {
-                int id = _database.checkUserLogin(usernameField.getText(), new String(passwordField.getPassword()));
+                int id = Application.db().checkUserLogin(usernameField.getText(), new String(passwordField.getPassword()));
                 if(id == Application.INVALID_USER_ID) {
                     JOptionPane.showMessageDialog(
                         LoginPanel.this,

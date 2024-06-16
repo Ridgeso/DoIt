@@ -2,28 +2,25 @@ package main;
 
 import main.Database.Database;
 import main.Panels.LoginPanel;
-import main.Panels.MainPanel;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.nio.file.Path;
 
 public class Application extends JFrame {
-    private static Database _db = new Database();
     public static void appMain() {
         if (instance == null) {
             new Application();
         }
     }
 
-    public static final Application getInstance() {
+    public static Application getInstance() {
         return instance;
     }
 
-    public static final Path assetsDir = Path.of("assets");
+    public static Database db() { return  database; }
 
-    public static final Database getDatabase() { return  _db;}
+    public static final Path assetsDir = Path.of("assets");
 
     public Application() {
         instance = this;
@@ -57,7 +54,7 @@ public class Application extends JFrame {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION){
-                    _db.close();
+                    db().close();
                     System.exit(0);
                 }
                 else {
@@ -69,7 +66,6 @@ public class Application extends JFrame {
 
     public void init() {
         setTitle("DoIt");
-
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addClosingEvenet(this);
@@ -86,6 +82,8 @@ public class Application extends JFrame {
     }
 
     public static Application instance = null;
-    public static final int INVALID_USER_ID = -1;
+    private static final Database database = new Database();
     private int userId = INVALID_USER_ID;
+
+    public static final int INVALID_USER_ID = -1;
 }

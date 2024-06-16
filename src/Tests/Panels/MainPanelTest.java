@@ -1,4 +1,4 @@
-package Tests;
+package Tests.Panels;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +41,7 @@ public class MainPanelTest {
             new Offer(2, "987654321", 200, "Type2", "Description2", "City2", "200")
         );
         when(mockDatabase.getAllOffers()).thenReturn(offers);
-        when(Application.getDatabase()).thenReturn(mockDatabase);
+        when(Application.db()).thenReturn(mockDatabase);
         mainPanel = new MainPanel();
 //        mockDatabase
     }

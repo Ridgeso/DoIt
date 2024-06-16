@@ -1,4 +1,4 @@
-package Tests;
+package Tests.Panels;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +41,7 @@ public class UserPanelTest {
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
         when(Application.getInstance().getUserId()).thenReturn(1);
-        when(Application.getDatabase()).thenReturn(mockDatabase);
+        when(Application.db()).thenReturn(mockDatabase);
         doAnswer(
                 new Answer() {
                     @Override

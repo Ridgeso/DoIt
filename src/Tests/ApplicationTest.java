@@ -28,7 +28,7 @@ public class ApplicationTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockedStaticApplication = mockStatic(Application.class);
-        when(Application.getDatabase()).thenReturn(mockDatabase);
+        when(Application.db()).thenReturn(mockDatabase);
 
         application = new Application();
         Application.instance = application;
@@ -52,7 +52,7 @@ public class ApplicationTest {
 
     @Test
     public void testGetDatabase() {
-        assertNotNull(Application.getDatabase());
+        assertNotNull(Application.db());
     }
 
     @Test

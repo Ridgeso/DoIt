@@ -35,7 +35,7 @@ public class Database implements AutoCloseable {
     public void connect() {
 
         Properties prop = new Properties();
-        try (FileInputStream input = new FileInputStream("DoIt/src/main/Database/dbCredentials.env"))
+        try (FileInputStream input = new FileInputStream("src/main/Database/dbCredentials.env"))
         {
             prop.load(input);
             Class.forName("org.postgresql.Driver");
@@ -259,11 +259,11 @@ public class Database implements AutoCloseable {
         System.out.println("Urzytkownik dodany");
     }
 
-    public Offer getOfferById(String id) {
+    public Offer getOfferById(int id) {
         Offer offer = null;
         String updateString = "SELECT * FROM Offers JOIN Users ON Users.id = Offers.id_user WHERE Offers.id = ?";
         try (PreparedStatement Ps = conn.prepareStatement(updateString)) {
-            Ps.setInt(1, Integer.parseInt(id));
+            Ps.setInt(1, id);
             try (ResultSet myRs = Ps.executeQuery()) {
 
                 if (myRs.next()) {
@@ -272,7 +272,7 @@ public class Database implements AutoCloseable {
                     String price = myRs.getString("price");
                     String description = myRs.getString("description");
                     String phoneNumber = myRs.getString("phone_number");
-                    offer = new Offer(Integer.parseInt(id), phoneNumber, Double.parseDouble(price), type, description, city, price);
+                    offer = new Offer(id, phoneNumber, Double.parseDouble(price), type, description, city, price);
                 }
             }
         } catch (SQLException e) {

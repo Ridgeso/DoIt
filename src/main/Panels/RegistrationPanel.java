@@ -14,7 +14,6 @@ public class RegistrationPanel extends JPanel {
     private JPasswordField passwordField, confirmPasswordField;
     private JCheckBox agreeCheckBox;
     private JButton registerButton;
-    private Database _database;
 
     public RegistrationPanel() {
         initializeComponents();
@@ -35,7 +34,7 @@ public class RegistrationPanel extends JPanel {
 
             registerUser(newUser);
             try {
-                Application.getInstance().setUserId(_database.checkIfUserExist(newUser.firstName(), newUser.lastName()));
+                Application.getInstance().setUserId(Application.db().checkIfUserExist(newUser.firstName(), newUser.lastName()));
             } catch (SQLException er) {}
 
             Application.getInstance().setPanel(new UserPanel());
@@ -52,7 +51,6 @@ public class RegistrationPanel extends JPanel {
         confirmPasswordField = new JPasswordField(20);
         agreeCheckBox = new JCheckBox("Zgoda na RODO");
         registerButton = new JButton("Zarejestruj");
-        _database = Application.getDatabase();
         agreeCheckBox.setOpaque(false);
         loginField.setDocument(new JTextFieldLimit(42));
         emailField.setDocument(new JTextFieldLimit(42));
@@ -83,7 +81,7 @@ public class RegistrationPanel extends JPanel {
 
     private void registerUser(User newUser)
     {
-        _database.addNewUser(newUser.firstName(), newUser.lastName(), newUser.email(), newUser.login(), newUser.password(), newUser.phoneNumber());
+        Application.db().addNewUser(newUser.firstName(), newUser.lastName(), newUser.email(), newUser.login(), newUser.password(), newUser.phoneNumber());
     }
     public static void main(String[] args)
     {
@@ -95,7 +93,6 @@ public class RegistrationPanel extends JPanel {
         frame.setVisible(true);
         frame.setBackground(new Color(255, 240, 206, 255));
 
-        Database db= Application.getDatabase();
         frame.add(new RegistrationPanel());
         frame.revalidate();
         frame.repaint();

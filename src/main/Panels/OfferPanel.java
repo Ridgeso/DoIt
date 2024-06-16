@@ -39,11 +39,9 @@ public class OfferPanel extends JPanel {
 
     private JButton applyButton;
     JPanel fieldsPanel;
-    private static Database db = null;
 
     public OfferPanel(int id, String phoneNumber, double rate, String type, String description) {
-        db = Application.getDatabase();
-        this.applicationCounter = new JLabel("Liczba aplikacji: " + db.countApplications(id));
+        this.applicationCounter = new JLabel("Liczba aplikacji: " + Application.db().countApplications(id));
         this.phoneNumberLabel = new JLabel("Numer telefonu:");
         this.titleLabel = new JLabel("Tytuł oferty:");
         this.locationLabel = new JLabel("Lokalizacja:");
@@ -80,7 +78,7 @@ public class OfferPanel extends JPanel {
         this.fieldsPanel.add(this.infoLabel);
         this.add(this.fieldsPanel, "Center");
 
-        if (db.checkIfUserIsAssignedToOffer(String.valueOf(id), String.valueOf(Application.getInstance().getUserId()))) {
+        if (Application.db().checkIfUserIsAssignedToOffer(String.valueOf(id), String.valueOf(Application.getInstance().getUserId()))) {
             this.applyButton.setVisible(false);
             this.infoLabel.setVisible(true);
             this.fieldsPanel.repaint();
@@ -88,12 +86,12 @@ public class OfferPanel extends JPanel {
 
         this.fieldsPanel.repaint();
         this.applyButton.addActionListener((e) -> {
-            if (!db.checkIfUserIsAssignedToOffer(String.valueOf(id), String.valueOf(Application.getInstance().getUserId()))) {
-                db.assignUserToOffer(id, Application.getInstance().getUserId());
+            if (!Application.db().checkIfUserIsAssignedToOffer(String.valueOf(id), String.valueOf(Application.getInstance().getUserId()))) {
+                Application.db().assignUserToOffer(id, Application.getInstance().getUserId());
                 JOptionPane.showMessageDialog(this, "Pomyślnie zaaplikowano", "Informacja", 1);
                 this.applyButton.setVisible(false);
                 this.infoLabel.setVisible(true);
-                this.applicationCounter.setText("Liczba aplikacji: " + db.countApplications(id));
+                this.applicationCounter.setText("Liczba aplikacji: " + Application.db().countApplications(id));
                 this.fieldsPanel.repaint();
             } else {
                 JOptionPane.showMessageDialog(this, "Już zaaplikowałeś na tą ofertę", "Informacja", 1);
@@ -112,7 +110,7 @@ public class OfferPanel extends JPanel {
         return this.fieldsPanel;
     }
 
-    public OfferPanel(Offer offer, Database db) {
+    public OfferPanel(Offer offer) {
         this(offer.id(), offer.phoneNumber(), offer.rate(), offer.type(), offer.description());
     }
 

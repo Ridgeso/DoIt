@@ -1,4 +1,5 @@
 package main.Panels;
+
 import main.Application;
 import main.Database.Database;
 import main.Database.Models.Offer;
@@ -8,20 +9,17 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Vector;
 import main.Database.Models.*;
+
 public class UserPanel extends JPanel {
 
-    public static Database db;
     private ArrayList<String> data;
     private JPanel offerAddPanel;
     private Vector<Offer> offers;
@@ -41,7 +39,6 @@ public class UserPanel extends JPanel {
     private JScrollPane pane;
 
     public UserPanel() {
-        db = Application.getDatabase();
         init();
     }
 
@@ -57,8 +54,8 @@ public class UserPanel extends JPanel {
         buttonAddOffer = new JButton("Dodaj");
         buttons = new ArrayList<>();
 
-        data = db.getUserData(Application.getInstance().getUserId());
-        applications = db.getUserApplications(Application.getInstance().getUserId());
+        data = Application.db().getUserData(Application.getInstance().getUserId());
+        applications = Application.db().getUserApplications(Application.getInstance().getUserId());
         label.setBorder(BorderFactory.createBevelBorder(1));
         show_application = Boolean.FALSE;
 
@@ -81,7 +78,7 @@ public class UserPanel extends JPanel {
     }
 
     private void show_offers() {
-        offers = db.getUserOffers(Application.getInstance().getUserId());
+        offers = Application.db().getUserOffers(Application.getInstance().getUserId());
         constraints.gridx = 0;
         constraints.gridy = offers_position;
 
@@ -295,7 +292,7 @@ public class UserPanel extends JPanel {
             } else if (column == 6) {
                 Offer offer = (Offer) table.getValueAt(row, column);
                 if (offer != null) {
-                    db.deleteOffer(offer.id());
+                    Application.db().deleteOffer(offer.id());
                     offers.clear();
                     show_offers();
 
@@ -305,7 +302,7 @@ public class UserPanel extends JPanel {
     }
 
         private void showApplicantDetails(int id_offer) {
-            Vector<User> applicants = db.getApplicantsData(id_offer);
+            Vector<User> applicants = Application.db().getApplicantsData(id_offer);
             if (userinfo != null) {
                 userinfo.dispose();
             }
@@ -322,7 +319,7 @@ public class UserPanel extends JPanel {
         }
 
         private void showAnnoucerDetails(int id_offer) {
-            User annoucer = db.getAnnoucerData(id_offer);
+            User annoucer = Application.db().getAnnoucerData(id_offer);
             if (userinfo != null) {
                 userinfo.dispose();
             }
@@ -370,7 +367,7 @@ public class UserPanel extends JPanel {
 
         constraints.gridy = offeradd_position;
         try {
-            db.addNewOfferWhenUserExists(Application.getInstance().getUserId(), city, type, price, description);
+            Application.db().addNewOfferWhenUserExists(Application.getInstance().getUserId(), city, type, price, description);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
             JOptionPane.showMessageDialog(

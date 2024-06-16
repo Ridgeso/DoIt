@@ -1,4 +1,4 @@
-package Tests;
+package Tests.Panels;
 
 import main.Application;
 import main.Database.Database;
@@ -39,7 +39,7 @@ public class TestRegistrationPanel {
         }
         mockedStaticApplication = mockStatic(Application.class);
         when(Application.getInstance()).thenReturn(mockApplication);
-        when(Application.getDatabase()).thenReturn(mockDatabase);
+        when(Application.db()).thenReturn(mockDatabase);
 
         sut = new RegistrationPanel();
     }

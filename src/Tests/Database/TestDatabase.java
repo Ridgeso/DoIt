@@ -1,4 +1,4 @@
-package Tests;
+package Tests.Database;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

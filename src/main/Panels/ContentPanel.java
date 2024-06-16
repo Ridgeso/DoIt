@@ -1,7 +1,6 @@
 package main.Panels;
 
 import main.Application;
-import main.Database.Database;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,9 +13,6 @@ public class ContentPanel extends JPanel {
     private JLabel priceLabel;
     private JButton viewButton;
     private GridBagConstraints constraints = new GridBagConstraints();
-    private int id;
-//    public Database database = new Database();
-    public Database database = Application.getDatabase();
 
     public ContentPanel(int id, String offerName, String localisation, String price) {
         setLayout(new BorderLayout());
@@ -34,8 +30,7 @@ public class ContentPanel extends JPanel {
                 System.out.println("Viewing offer: " + offerName);
 //                Implementacja z łączeniem do bazy danych, będzie działać gdy zacznie działac wyciąganie oferty po ID z bazy danych
 //
-                  viewOfferPanel(new OfferPanel(database.getOfferById(Integer.toString(id)), database).getPanel());
-//                  viewOfferPanel(new OfferPanel(id, "", Double.parseDouble(price), "", "").getPanel());
+                  viewOfferPanel(new OfferPanel(Application.db().getOfferById(id)).getPanel());
             }
         });
 
@@ -70,7 +65,7 @@ public class ContentPanel extends JPanel {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setPreferredSize(new Dimension(1000, 630));
-        for(int i=0; i<10; i++) {
+        for(int i = 0; i < 10; i++) {
             ContentPanel empty = new ContentPanel(i, "Offer " + i, "Location " + i, i+"00.0");
             main.add(empty);
         }
